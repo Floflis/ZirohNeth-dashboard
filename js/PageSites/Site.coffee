@@ -74,6 +74,35 @@ class Site extends Class
 	isWorking: ->
 		@row.tasks > 0 or @row.event?[0] == "updating"
 
+	# Content v2 uses Ethereum EOAs and BLAKE3-256 file hashes.
+	isEthereumIdentity: ->
+		/^0x[0-9a-fA-F]{40}$/.test(@row.address) or @row.content?.identity_scheme == "ethereum-eoa-secp256k1"
+
+	contentVersion: ->
+		version = parseInt(@row.content?.content_version or 1)
+		if isNaN(version) then 1 else version
+
+	hashAlgorithm: ->
+		return "BLAKE3-256" if @row.content?.hash_algorithm == "blake3-256" or @contentVersion() >= 2
+		return "SHA-512 legacy"
+
+	isHistorical: ->
+		@row.settings?.migration_role == "historical" or @row.content?.migration_status == "historical" or !!@row.content?.migration
+
+	migrationTarget: ->
+		@row.settings?.migration_target or @row.content?.migration_target or @row.content?.migration?.new_identity or null
+
+	renderIdentityBadges: ->
+		badges = []
+		if @contentVersion() >= 2 or @isEthereumIdentity()
+			badges.push h("span.identity-badge.identity-v2", "Ethereum · v2")
+			badges.push h("span.identity-badge.hash-v2", @hashAlgorithm())
+		else
+			badges.push h("span.identity-badge.identity-legacy", "Bitcoin · v1")
+		if @isHistorical()
+			badges.push h("span.identity-badge.identity-historical", "Historical")
+		return h("div.identity-badges", badges)
+
 
 	handleFavoriteClick: =>
 		@favorite = true
@@ -154,20 +183,27 @@ class Site extends Class
 			@menu.items.push ["Unfavorite", @handleUnfavoriteClick]
 		else
 			@menu.items.push ["Favorite", @handleFavoriteClick]
-		@menu.items.push ["Update", @handleUpdateClick]
-		@menu.items.push ["Check files", @handleCheckfilesClick]
-		if @row.settings.serving
-			@menu.items.push ["Pause", @handlePauseClick]
+
+		if @isHistorical()
+			target = @migrationTarget()
+			if target
+				@menu.items.push ["Open Ethereum destination", Text.getSiteUrl(target)]
+			@menu.items.push ["Save historical site as .zip", "/ZeroNet-Internal/Zip?address=#{@row.address}"]
 		else
-			@menu.items.push ["Resume", @handleResumeClick]
-		@menu.items.push ["Save as .zip", "/ZeroNet-Internal/Zip?address=#{@row.address}"]
-		if @row.content.cloneable == true
-			@menu.items.push ["Clone", @handleCloneClick]
-		if @row.settings.own and @row.content.cloned_from and Page.server_info.rev >= 2080
-			@menu.items.push ["---"]
-			@menu.items.push ["Upgrade code", @handleCloneUpgradeClick]
-		@menu.items.push ["---"]
-		@menu.items.push ["Delete", @handleDeleteClick]
+			@menu.items.push ["Update", @handleUpdateClick]
+			@menu.items.push ["Check files", @handleCheckfilesClick]
+			if @row.settings.serving
+				@menu.items.push ["Pause", @handlePauseClick]
+			else
+				@menu.items.push ["Resume", @handleResumeClick]
+			@menu.items.push ["Save as .zip", "/ZeroNet-Internal/Zip?address=#{@row.address}"]
+			if @row.content.cloneable == true
+				@menu.items.push ["Clone", @handleCloneClick]
+			if @row.settings.own and @row.content.cloned_from and Page.server_info.rev >= 2080
+				@menu.items.push ["---"]
+				@menu.items.push ["Upgrade code", @handleCloneUpgradeClick]
+				@menu.items.push ["---"]
+				@menu.items.push ["Delete", @handleDeleteClick]
 
 		if @menu.visible
 			@menu.hide()
@@ -257,12 +293,15 @@ class Site extends Class
 			classes: {
 				"modified-lastday": now - @row.settings.modified < 60*60*24,
 				"disabled": not @row.settings.serving and not @row.demo,
-				"working": @isWorking()
+				"working": @isWorking(),
+				"identity-ethereum": @isEthereumIdentity(),
+				"identity-historical": @isHistorical()
 			}
 		},
 			h("div.circle", {style: "color: #{Text.toColor(@row.address, 40, 50)}"}, ["\u2022"]),
 			h("a.inner", {href: @getHref(), title: @row.content.title if @row.content.title?.length > 20}, [
 				h("span.title", [@row.content.title or @row.address]),
+				@renderIdentityBadges(),
 				h("div.details", [
 					h("span.modified", [
 						h("div.icon-clock")
