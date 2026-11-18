@@ -3468,11 +3468,18 @@
       if (this.contentVersion() >= 2 || this.isEthereumIdentity()) {
         badges.push(h("span.identity-badge.identity-v2", "Ethereum · v2"));
         badges.push(h("span.identity-badge.hash-v2", this.hashAlgorithm()));
+        badges.push(h("span.identity-badge.signature-v2", "EIP-712"));
       } else {
         badges.push(h("span.identity-badge.identity-legacy", "Bitcoin · v1"));
       }
       if (this.isHistorical()) {
-        badges.push(h("span.identity-badge.identity-historical", "Historical"));
+        var target;
+        target = this.migrationTarget();
+        if (target) {
+          badges.push(h("span.identity-badge.identity-historical", "Historical → " + target.slice(0, 8) + "…"));
+        } else {
+          badges.push(h("span.identity-badge.identity-historical", "Historical"));
+        }
       }
       return h("div.identity-badges", badges);
     };
