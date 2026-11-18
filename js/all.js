@@ -3424,6 +3424,59 @@
       return this.row.tasks > 0 || ((ref = this.row.event) != null ? ref[0] : void 0) === "updating";
     };
 
+    // Content v2 identity and hash metadata are supplied by the verified core.
+    Site.prototype.isEthereumIdentity = function() {
+      var content;
+      content = this.row.content || {};
+      return /^0x[0-9a-fA-F]{40}$/.test(this.row.address) || content.identity_scheme === "ethereum-eoa-secp256k1";
+    };
+
+    Site.prototype.contentVersion = function() {
+      var version, ref;
+      version = parseInt((ref = this.row.content) != null ? ref.content_version || 1 : 1, 10);
+      return isNaN(version) ? 1 : version;
+    };
+
+    Site.prototype.hashAlgorithm = function() {
+      var content;
+      content = this.row.content || {};
+      if (content.hash_algorithm === "blake3-256" || this.contentVersion() >= 2) {
+        return "BLAKE3-256";
+      }
+      return "SHA-512 legacy";
+    };
+
+    Site.prototype.isHistorical = function() {
+      var content, migration, ref, ref1;
+      content = this.row.content || {};
+      migration = content.migration;
+      return (((ref = this.row.settings) != null ? ref.migration_role : void 0) === "historical") ||
+        content.migration_status === "historical" || !!migration;
+    };
+
+    Site.prototype.migrationTarget = function() {
+      var content, ref, ref1, ref2;
+      content = this.row.content || {};
+      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) ||
+        content.migration_target ||
+        ((ref1 = content.migration) != null ? ref1.new_identity : void 0) || null;
+    };
+
+    Site.prototype.renderIdentityBadges = function() {
+      var badges;
+      badges = [];
+      if (this.contentVersion() >= 2 || this.isEthereumIdentity()) {
+        badges.push(h("span.identity-badge.identity-v2", "Ethereum · v2"));
+        badges.push(h("span.identity-badge.hash-v2", this.hashAlgorithm()));
+      } else {
+        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin · v1"));
+      }
+      if (this.isHistorical()) {
+        badges.push(h("span.identity-badge.identity-historical", "Historical"));
+      }
+      return h("div.identity-badges", badges);
+    };
+
     Site.prototype.handleFavoriteClick = function() {
       this.favorite = true;
       this.menu = new Menu();
@@ -3549,29 +3602,38 @@
     };
 
     Site.prototype.handleSettingsClick = function(e) {
+      var target;
       this.menu.items = [];
       if (this.favorite) {
         this.menu.items.push(["Unfavorite", this.handleUnfavoriteClick]);
       } else {
         this.menu.items.push(["Favorite", this.handleFavoriteClick]);
       }
-      this.menu.items.push(["Update", this.handleUpdateClick]);
-      this.menu.items.push(["Check files", this.handleCheckfilesClick]);
-      if (this.row.settings.serving) {
-        this.menu.items.push(["Pause", this.handlePauseClick]);
+      if (this.isHistorical()) {
+        target = this.migrationTarget();
+        if (target) {
+          this.menu.items.push(["Open Ethereum destination", Text.getSiteUrl(target)]);
+        }
+        this.menu.items.push(["Save historical site as .zip", "/ZeroNet-Internal/Zip?address=" + this.row.address]);
       } else {
-        this.menu.items.push(["Resume", this.handleResumeClick]);
-      }
-      this.menu.items.push(["Save as .zip", "/ZeroNet-Internal/Zip?address=" + this.row.address]);
-      if (this.row.content.cloneable === true) {
-        this.menu.items.push(["Clone", this.handleCloneClick]);
-      }
-      if (this.row.settings.own && this.row.content.cloned_from && Page.server_info.rev >= 2080) {
+        this.menu.items.push(["Update", this.handleUpdateClick]);
+        this.menu.items.push(["Check files", this.handleCheckfilesClick]);
+        if (this.row.settings.serving) {
+          this.menu.items.push(["Pause", this.handlePauseClick]);
+        } else {
+          this.menu.items.push(["Resume", this.handleResumeClick]);
+        }
+        this.menu.items.push(["Save as .zip", "/ZeroNet-Internal/Zip?address=" + this.row.address]);
+        if (this.row.content.cloneable === true) {
+          this.menu.items.push(["Clone", this.handleCloneClick]);
+        }
+        if (this.row.settings.own && this.row.content.cloned_from && Page.server_info.rev >= 2080) {
+          this.menu.items.push(["---"]);
+          this.menu.items.push(["Upgrade code", this.handleCloneUpgradeClick]);
+        }
         this.menu.items.push(["---"]);
-        this.menu.items.push(["Upgrade code", this.handleCloneUpgradeClick]);
+        this.menu.items.push(["Delete", this.handleDeleteClick]);
       }
-      this.menu.items.push(["---"]);
-      this.menu.items.push(["Delete", this.handleDeleteClick]);
       if (this.menu.visible) {
         this.menu.hide();
       } else {
@@ -3683,7 +3745,9 @@
         classes: {
           "modified-lastday": now - this.row.settings.modified < 60 * 60 * 24,
           "disabled": !this.row.settings.serving && !this.row.demo,
-          "working": this.isWorking()
+          "working": this.isWorking(),
+          "identity-ethereum": this.isEthereumIdentity(),
+          "identity-historical": this.isHistorical()
         }
       }, h("div.circle", {
         style: "color: " + (Text.toColor(this.row.address, 40, 50))
@@ -3691,7 +3755,7 @@
         href: this.getHref(),
         title: ((ref = this.row.content.title) != null ? ref.length : void 0) > 20 ? this.row.content.title : void 0
       }, [
-        h("span.title", [this.row.content.title || this.row.address]), h("div.details", [h("span.modified", [h("div.icon-clock"), Page.settings.sites_orderby === "size" ? h("span.value", [(this.row.settings.size / 1024 / 1024 + (this.row.settings.size_optional != null) / 1024 / 1024).toFixed(1), "MB"]) : h("span.value", [Time.since(this.row.settings.modified)])]), h("span.peers", [h("div.icon-profile"), h("span.value", [Math.max((this.row.settings.peers ? this.row.settings.peers : 0), this.row.peers)])])]), this.row.demo ? h("div.details.demo", "Activate \u00BB") : void 0, this.row.need_limit ? h("a.details.needaction", {
+        h("span.title", [this.row.content.title || this.row.address]), this.renderIdentityBadges(), h("div.details", [h("span.modified", [h("div.icon-clock"), Page.settings.sites_orderby === "size" ? h("span.value", [(this.row.settings.size / 1024 / 1024 + (this.row.settings.size_optional != null) / 1024 / 1024).toFixed(1), "MB"]) : h("span.value", [Time.since(this.row.settings.modified)])]), h("span.peers", [h("div.icon-profile"), h("span.value", [Math.max((this.row.settings.peers ? this.row.settings.peers : 0), this.row.peers)])])]), this.row.demo ? h("div.details.demo", "Activate \u00BB") : void 0, this.row.need_limit ? h("a.details.needaction", {
           href: "#Set+limit",
           onclick: this.handleLimitIncreaseClick
         }, "Set limit to " + this.row.need_limit + "MB") : void 0, h("div.message", {
