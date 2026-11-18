@@ -97,10 +97,15 @@ class Site extends Class
 		if @contentVersion() >= 2 or @isEthereumIdentity()
 			badges.push h("span.identity-badge.identity-v2", "Ethereum · v2")
 			badges.push h("span.identity-badge.hash-v2", @hashAlgorithm())
+			badges.push h("span.identity-badge.signature-v2", "EIP-712")
 		else
 			badges.push h("span.identity-badge.identity-legacy", "Bitcoin · v1")
 		if @isHistorical()
-			badges.push h("span.identity-badge.identity-historical", "Historical")
+			target = @migrationTarget()
+			if target
+				badges.push h("span.identity-badge.identity-historical", "Historical → #{target.slice(0, 8)}…")
+			else
+				badges.push h("span.identity-badge.identity-historical", "Historical")
 		return h("div.identity-badges", badges)
 
 
