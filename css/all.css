@@ -1168,3 +1168,19 @@ display: none;
 width: 100%;
 }
 }
+
+
+/* ZirohNeth content v2 identity metadata */
+.SiteList .site .identity-badges {
+	display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; line-height: 1.2;
+}
+.SiteList .site .identity-badge {
+	display: inline-block; border-radius: 3px; padding: 2px 5px;
+	font-size: 9px; font-weight: 600; letter-spacing: .02em;
+	background: rgba(125, 161, 191, .14); color: #8caac4;
+}
+.SiteList .site .identity-v2 { background: rgba(72, 160, 132, .16); color: #58c9a0; }
+.SiteList .site .hash-v2 { background: rgba(105, 130, 220, .16); color: #91a7f5; }
+.SiteList .site .signature-v2 { background: rgba(164, 125, 210, .16); color: #b99ae8; }
+.SiteList .site .identity-historical { background: rgba(205, 151, 70, .16); color: #e4b66c; }
+.SiteList .site.identity-historical { border-left: 2px solid rgba(205, 151, 70, .55); }
