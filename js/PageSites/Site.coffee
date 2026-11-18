@@ -202,8 +202,8 @@ class Site extends Class
 			if @row.settings.own and @row.content.cloned_from and Page.server_info.rev >= 2080
 				@menu.items.push ["---"]
 				@menu.items.push ["Upgrade code", @handleCloneUpgradeClick]
-				@menu.items.push ["---"]
-				@menu.items.push ["Delete", @handleDeleteClick]
+			@menu.items.push ["---"]
+			@menu.items.push ["Delete", @handleDeleteClick]
 
 		if @menu.visible
 			@menu.hide()
