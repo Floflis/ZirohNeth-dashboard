@@ -94,8 +94,11 @@ class Site extends Class
 		return "SHA-512 legacy" if @isVerifiedManifest() and @contentVersion() == 1
 		return "Pending verification"
 
+	migrationState: ->
+		@row.settings?.migration_state or "verification_unavailable"
+
 	isHistorical: ->
-		@row.settings?.migration_state == "migration_verified"
+		@migrationState() == "migration_verified"
 
 	migrationTarget: ->
 		return null unless @isHistorical()
@@ -107,14 +110,25 @@ class Site extends Class
 			badges.push h("span.identity-badge.identity-v2", "Ethereum identity")
 		else
 			badges.push h("span.identity-badge.identity-legacy", "Bitcoin identity")
-		if not @isVerifiedManifest()
-			badges.push h("span.identity-badge.identity-pending", "Manifest pending verification")
+		if @row.settings?.content_verification_status == "invalid"
+			badges.push h("span.identity-badge.identity-error", "Manifest verification failed")
+		else if not @isVerifiedManifest()
+			if @row.content?
+				badges.push h("span.identity-badge.identity-pending", "Verification unavailable")
+			else
+				badges.push h("span.identity-badge.identity-pending", "Manifest pending verification")
 		else if @isVerifiedV2()
 			badges.push h("span.identity-badge.identity-v2", "Content v2")
 			badges.push h("span.identity-badge.hash-v2", "BLAKE3-256")
 			badges.push h("span.identity-badge.signature-v2", "EIP-712")
 		else
 			badges.push h("span.identity-badge.identity-legacy", "Content v1 · SHA-512")
+		if @row.settings?.freshness_status == "unverified_first_contact"
+			badges.push h("span.identity-badge.identity-pending", "Freshness not independently established")
+		if @migrationState() == "migration_conflict"
+			badges.push h("span.identity-badge.identity-error", "Migration conflict")
+		else if @migrationState() == "migration_pending"
+			badges.push h("span.identity-badge.identity-pending", "Migration pending")
 		if @isHistorical()
 			target = @migrationTarget()
 			if target
