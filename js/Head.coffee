@@ -108,6 +108,9 @@ class Head extends Class
 		@menu_settings.items.push ["IPFS: external Kubo", (=> @handleIpfsModeClick("external"))]
 		@menu_settings.items.push ["IPFS: managed Kubo (coming soon)", null]
 		@menu_settings.items.push ["---"]
+		@menu_settings.items.push ["Iroh: disabled", (=> @handleIrohModeClick("disabled"))]
+		@menu_settings.items.push ["Iroh: external Rust bridge (coming soon)", null]
+		@menu_settings.items.push ["---"]
 		@menu_settings.items.push ["Order sites by peers", ( => @handleOrderbyClick("peers") ), (orderby == "peers")]
 		@menu_settings.items.push ["Order sites by update time", ( => @handleOrderbyClick("modified") ), (orderby == "modified")]
 		@menu_settings.items.push ["Order sites by add time", ( => @handleOrderbyClick("addtime") ), (orderby == "addtime")]
@@ -143,6 +146,13 @@ class Head extends Class
 			return Page.cmd "wrapperNotification", ["info", "Managed Kubo download is not available yet."]
 		Page.cmd "configSet", ["ipfs_mode", mode], ->
 			Page.cmd "wrapperNotification", ["info", "IPFS mode set to #{mode}. Restart may be required."]
+		return false
+
+	handleIrohModeClick: (mode) =>
+		if mode != "disabled"
+			return Page.cmd "wrapperNotification", ["info", "The Iroh Rust bridge is not available yet."]
+		Page.cmd "configSet", ["iroh_mode", mode], ->
+			Page.cmd "wrapperNotification", ["info", "Iroh mode set to #{mode}."]
 		return false
 
 	handleUpdateAllClick: =>
