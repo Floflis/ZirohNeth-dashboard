@@ -3560,14 +3560,18 @@
     };
 
     Site.prototype.renderIdentityBadges = function() {
-      var badges, ref, ref1, target;
+      var badges, ref, ref1, ref2, ref3, target;
       badges = [];
       if (this.isEthereumIdentity()) {
         badges.push(h("span.identity-badge.identity-v2", "Ethereum identity"));
+        badges.push(h("span.identity-badge.identity-pending", "No Tor onion peers"));
       } else {
         badges.push(h("span.identity-badge.identity-legacy", "Bitcoin identity"));
+        if ((((ref = this.row.content) != null ? ref.includes : void 0) != null) || (((ref1 = this.row.content) != null ? ref1.user_contents : void 0) != null)) {
+          badges.push(h("span.identity-badge.identity-pending", "Migration layout unsupported"));
+        }
       }
-      if (((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "invalid") {
+      if (((ref2 = this.row.settings) != null ? ref2.content_verification_status : void 0) === "invalid") {
         badges.push(h("span.identity-badge.identity-error", "Manifest verification failed"));
       } else if (!this.isVerifiedManifest()) {
         if (this.row.content != null) {
@@ -3582,7 +3586,7 @@
       } else {
         badges.push(h("span.identity-badge.identity-legacy", "Content v1 · SHA-512"));
       }
-      if (((ref1 = this.row.settings) != null ? ref1.freshness_status : void 0) === "unverified_first_contact") {
+      if (((ref3 = this.row.settings) != null ? ref3.freshness_status : void 0) === "unverified_first_contact") {
         badges.push(h("span.identity-badge.identity-pending", "Freshness not independently established"));
       }
       if (this.migrationState() === "migration_conflict") {
