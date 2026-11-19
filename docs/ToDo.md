@@ -20,7 +20,7 @@ This list tracks dashboard work that remains unimplemented or unverified. A task
 
 ## Build and release
 
-- [ ] Run the pinned CoffeeScript build and prove js/all.js is byte-for-byte reproducible from js/ sources.
-- [ ] Verify the build workflow succeeds on a clean runner and that generated bundle changes are included in pull requests.
+- [x] Run the pinned CoffeeScript build and prove js/all.js is byte-for-byte reproducible from js/ sources (GitHub Actions run 3 passed).
+- [x] Verify the build workflow succeeds on a clean runner and that generated bundle changes are included in pull requests (the workflow regenerated and committed js/all.js, then passed the bundle check).
 - [ ] Add smoke tests against the browser bundle and a real backend, not only CoffeeScript source.
 - [ ] Run browser-level regression tests for historical read-only menus and verified destination navigation.
