@@ -1,0 +1,13 @@
+{
+  "name": "zirohneth-dashboard",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Reproducible CoffeeScript build for the ZirohNeth dashboard",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "check:bundle": "node scripts/build.js --check"
+  },
+  "devDependencies": {
+    "coffee-script": "1.12.7"
+  }
+}
