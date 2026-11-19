@@ -3432,48 +3432,68 @@
     };
 
     Site.prototype.contentVersion = function() {
-      var version, ref;
-      version = parseInt((ref = this.row.content) != null ? ref.content_version || 1 : 1, 10);
-      return isNaN(version) ? 1 : version;
+      var version;
+      if (!this.row.content) {
+        return null;
+      }
+      version = parseInt(this.row.content.content_version || 1, 10);
+      return isNaN(version) ? null : version;
+    };
+
+    Site.prototype.isVerifiedManifest = function() {
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "verified";
+    };
+
+    Site.prototype.isVerifiedV2 = function() {
+      var content;
+      content = this.row.content || {};
+      return this.isVerifiedManifest() && this.contentVersion() === 2 &&
+        content.hash_algorithm === "blake3-256" &&
+        content.signature_scheme === "ethereum-eip712-v1";
     };
 
     Site.prototype.hashAlgorithm = function() {
-      var content;
-      content = this.row.content || {};
-      if (content.hash_algorithm === "blake3-256" || this.contentVersion() >= 2) {
+      if (this.isVerifiedV2()) {
         return "BLAKE3-256";
       }
-      return "SHA-512 legacy";
+      if (this.isVerifiedManifest() && this.contentVersion() === 1) {
+        return "SHA-512 legacy";
+      }
+      return "Pending verification";
     };
 
     Site.prototype.isHistorical = function() {
-      var content, migration, ref, ref1;
-      content = this.row.content || {};
-      migration = content.migration;
-      return (((ref = this.row.settings) != null ? ref.migration_role : void 0) === "historical") ||
-        content.migration_status === "historical" || !!migration;
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.migration_state : void 0) === "migration_verified";
     };
 
     Site.prototype.migrationTarget = function() {
-      var content, ref, ref1, ref2;
-      content = this.row.content || {};
-      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) ||
-        content.migration_target ||
-        ((ref1 = content.migration) != null ? ref1.new_identity : void 0) || null;
+      var ref;
+      if (!this.isHistorical()) {
+        return null;
+      }
+      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) || null;
     };
 
     Site.prototype.renderIdentityBadges = function() {
-      var badges;
+      var badges, target;
       badges = [];
-      if (this.contentVersion() >= 2 || this.isEthereumIdentity()) {
-        badges.push(h("span.identity-badge.identity-v2", "Ethereum · v2"));
-        badges.push(h("span.identity-badge.hash-v2", this.hashAlgorithm()));
+      if (this.isEthereumIdentity()) {
+        badges.push(h("span.identity-badge.identity-v2", "Ethereum identity"));
+      } else {
+        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin identity"));
+      }
+      if (!this.isVerifiedManifest()) {
+        badges.push(h("span.identity-badge.identity-pending", "Manifest pending verification"));
+      } else if (this.isVerifiedV2()) {
+        badges.push(h("span.identity-badge.identity-v2", "Content v2"));
+        badges.push(h("span.identity-badge.hash-v2", "BLAKE3-256"));
         badges.push(h("span.identity-badge.signature-v2", "EIP-712"));
       } else {
-        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin · v1"));
+        badges.push(h("span.identity-badge.identity-legacy", "Content v1 · SHA-512"));
       }
       if (this.isHistorical()) {
-        var target;
         target = this.migrationTarget();
         if (target) {
           badges.push(h("span.identity-badge.identity-historical", "Historical → " + target.slice(0, 8) + "…"));
