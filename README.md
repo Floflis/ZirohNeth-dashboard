@@ -18,7 +18,15 @@ Historical site menus intentionally omit update, pause/resume, clone and delete 
 
 UI source is maintained in CoffeeScript under `js/`. The browser loads the checked-in `js/all.js` bundle directly from `index.html`; changes to CoffeeScript must be reflected in that bundle. Styles are maintained in the individual CSS files and the checked-in aggregate `css/all.css`.
 
-There is currently no build script or dependency manifest in this repository. Until a reproducible build pipeline is added, keep source and browser artifacts synchronized and verify both when changing the UI.
+The pinned CoffeeScript compiler and explicit source order are defined in `package.json` and `scripts/build.js`.
+
+```sh
+npm install --no-audit --no-fund
+npm run build
+npm run check:bundle
+```
+
+GitHub Actions runs the bundle consistency check for pushes and pull requests targeting `main` or `master`. The first CI run still needs to confirm that the pinned compiler reproduces the committed bundle byte-for-byte.
 
 ## Compatibility
 
