@@ -26,7 +26,7 @@ npm run build
 npm run check:bundle
 ```
 
-GitHub Actions runs the bundle consistency check for pushes and pull requests targeting `main` or `master`. The first CI run still needs to confirm that the pinned compiler reproduces the committed bundle byte-for-byte.
+GitHub Actions regenerates the browser bundle on pull requests, commits the generated artifact when it changes, and verifies that a second build produces no diff. The pinned CoffeeScript 1.12.7 build passed in the audit-remediation pull request.
 
 ## Compatibility
 
