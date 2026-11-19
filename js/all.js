@@ -3317,7 +3317,6 @@
       this.handleHelpsClick = bind(this.handleHelpsClick, this);
       this.handleHelpAllClick = bind(this.handleHelpAllClick, this);
       this.handleHelpClick = bind(this.handleHelpClick, this);
-      this.handleIpfsModeClick = bind(this.handleIpfsModeClick, this);
       this.handleSettingsClick = bind(this.handleSettingsClick, this);
       this.handleDeleteClick = bind(this.handleDeleteClick, this);
       this.handleCloneUpgradeClick = bind(this.handleCloneUpgradeClick, this);
@@ -3433,48 +3432,86 @@
     };
 
     Site.prototype.contentVersion = function() {
-      var version, ref;
-      version = parseInt((ref = this.row.content) != null ? ref.content_version || 1 : 1, 10);
-      return isNaN(version) ? 1 : version;
+      var version;
+      if (!this.row.content) {
+        return null;
+      }
+      version = parseInt(this.row.content.content_version || 1, 10);
+      return isNaN(version) ? null : version;
+    };
+
+    Site.prototype.isVerifiedManifest = function() {
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "verified";
+    };
+
+    Site.prototype.isVerifiedV2 = function() {
+      var content;
+      content = this.row.content || {};
+      return this.isVerifiedManifest() && this.contentVersion() === 2 &&
+        content.hash_algorithm === "blake3-256" &&
+        content.signature_scheme === "ethereum-eip712-v1";
     };
 
     Site.prototype.hashAlgorithm = function() {
-      var content;
-      content = this.row.content || {};
-      if (content.hash_algorithm === "blake3-256" || this.contentVersion() >= 2) {
+      if (this.isVerifiedV2()) {
         return "BLAKE3-256";
       }
-      return "SHA-512 legacy";
+      if (this.isVerifiedManifest() && this.contentVersion() === 1) {
+        return "SHA-512 legacy";
+      }
+      return "Pending verification";
+    };
+
+    Site.prototype.migrationState = function() {
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.migration_state : void 0) || "verification_unavailable";
     };
 
     Site.prototype.isHistorical = function() {
-      var content, migration, ref, ref1;
-      content = this.row.content || {};
-      migration = content.migration;
-      return (((ref = this.row.settings) != null ? ref.migration_role : void 0) === "historical") ||
-        content.migration_status === "historical" || !!migration;
+      return this.migrationState() === "migration_verified";
     };
 
     Site.prototype.migrationTarget = function() {
-      var content, ref, ref1, ref2;
-      content = this.row.content || {};
-      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) ||
-        content.migration_target ||
-        ((ref1 = content.migration) != null ? ref1.new_identity : void 0) || null;
+      var ref;
+      if (!this.isHistorical()) {
+        return null;
+      }
+      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) || null;
     };
 
     Site.prototype.renderIdentityBadges = function() {
-      var badges;
+      var badges, target, ref;
       badges = [];
-      if (this.contentVersion() >= 2 || this.isEthereumIdentity()) {
-        badges.push(h("span.identity-badge.identity-v2", "Ethereum · v2"));
-        badges.push(h("span.identity-badge.hash-v2", this.hashAlgorithm()));
+      if (this.isEthereumIdentity()) {
+        badges.push(h("span.identity-badge.identity-v2", "Ethereum identity"));
+      } else {
+        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin identity"));
+      }
+      if (((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "invalid") {
+        badges.push(h("span.identity-badge.identity-error", "Manifest verification failed"));
+      } else if (!this.isVerifiedManifest()) {
+        if (this.row.content) {
+          badges.push(h("span.identity-badge.identity-pending", "Verification unavailable"));
+        } else {
+          badges.push(h("span.identity-badge.identity-pending", "Manifest pending verification"));
+        }
+      } else if (this.isVerifiedV2()) {
+        badges.push(h("span.identity-badge.identity-v2", "Content v2"));
+        badges.push(h("span.identity-badge.hash-v2", "BLAKE3-256"));
         badges.push(h("span.identity-badge.signature-v2", "EIP-712"));
       } else {
-        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin · v1"));
+        badges.push(h("span.identity-badge.identity-legacy", "Content v1 · SHA-512"));
+      }
+      if (((ref = this.row.settings) != null ? ref.freshness_status : void 0) === "unverified_first_contact") {
+        badges.push(h("span.identity-badge.identity-pending", "Freshness not independently established"));
+      }
+      if (this.migrationState() === "migration_conflict") {
+        badges.push(h("span.identity-badge.identity-error", "Migration conflict"));
+      } else if (this.migrationState() === "migration_pending") {
+        badges.push(h("span.identity-badge.identity-pending", "Migration pending"));
       }
       if (this.isHistorical()) {
-        var target;
         target = this.migrationTarget();
         if (target) {
           badges.push(h("span.identity-badge.identity-historical", "Historical → " + target.slice(0, 8) + "…"));
@@ -7134,10 +7171,6 @@
       this.menu_settings.items = [];
       this.menu_settings.items.push(["Update all sites", this.handleUpdateAllClick]);
       this.menu_settings.items.push(["---"]);
-      this.menu_settings.items.push(["IPFS: disabled", (function(_this) { return function() { return _this.handleIpfsModeClick("disabled"); }; })(this)]);
-      this.menu_settings.items.push(["IPFS: external Kubo", (function(_this) { return function() { return _this.handleIpfsModeClick("external"); }; })(this)]);
-      this.menu_settings.items.push(["IPFS: managed Kubo (coming soon)", null]);
-      this.menu_settings.items.push(["---"]);
       this.menu_settings.items.push([
         "Order sites by peers", ((function(_this) {
           return function() {
@@ -7194,16 +7227,6 @@
       } else {
         this.menu_settings.show();
       }
-      return false;
-    };
-
-    Head.prototype.handleIpfsModeClick = function(mode) {
-      if (["disabled", "external"].indexOf(mode) === -1) {
-        return Page.cmd("wrapperNotification", ["info", "Managed Kubo download is not available yet."]);
-      }
-      Page.cmd("configSet", ["ipfs_mode", mode], function() {
-        return Page.cmd("wrapperNotification", ["info", "IPFS mode set to " + mode + ". Restart may be required."]);
-      });
       return false;
     };
 
