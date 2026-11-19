@@ -56,7 +56,7 @@ const bundle = sources.map((relative) => {
   const body = path.extname(filename) === ".coffee"
     ? CoffeeScript.compile(source, { filename, bare: false })
     : source;
-  return "/* ---- " + relative.replace(/^js\\//, "") + " ---- */\n\n" + body;
+  return "/* ---- " + relative.substring(3) + " ---- */\n\n" + body;
 }).join("\n\n");
 
 if (process.argv.includes("--check")) {
