@@ -3318,6 +3318,7 @@
       this.handleHelpAllClick = bind(this.handleHelpAllClick, this);
       this.handleHelpClick = bind(this.handleHelpClick, this);
       this.handleIpfsModeClick = bind(this.handleIpfsModeClick, this);
+      this.handleIrohModeClick = bind(this.handleIrohModeClick, this);
       this.handleSettingsClick = bind(this.handleSettingsClick, this);
       this.handleDeleteClick = bind(this.handleDeleteClick, this);
       this.handleCloneUpgradeClick = bind(this.handleCloneUpgradeClick, this);
@@ -7138,6 +7139,9 @@
       this.menu_settings.items.push(["IPFS: external Kubo", (function(_this) { return function() { return _this.handleIpfsModeClick("external"); }; })(this)]);
       this.menu_settings.items.push(["IPFS: managed Kubo (coming soon)", null]);
       this.menu_settings.items.push(["---"]);
+      this.menu_settings.items.push(["Iroh: disabled", (function(_this) { return function() { return _this.handleIrohModeClick("disabled"); }; })(this)]);
+      this.menu_settings.items.push(["Iroh: external Rust bridge (coming soon)", null]);
+      this.menu_settings.items.push(["---"]);
       this.menu_settings.items.push([
         "Order sites by peers", ((function(_this) {
           return function() {
@@ -7203,6 +7207,16 @@
       }
       Page.cmd("configSet", ["ipfs_mode", mode], function() {
         return Page.cmd("wrapperNotification", ["info", "IPFS mode set to " + mode + ". Restart may be required."]);
+      });
+      return false;
+    };
+
+    Head.prototype.handleIrohModeClick = function(mode) {
+      if (mode !== "disabled") {
+        return Page.cmd("wrapperNotification", ["info", "The Iroh Rust bridge is not available yet."]);
+      }
+      Page.cmd("configSet", ["iroh_mode", mode], function() {
+        return Page.cmd("wrapperNotification", ["info", "Iroh mode set to " + mode + "."]);
       });
       return false;
     };
