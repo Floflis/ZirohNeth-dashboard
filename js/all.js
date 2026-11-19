@@ -3317,6 +3317,7 @@
       this.handleHelpsClick = bind(this.handleHelpsClick, this);
       this.handleHelpAllClick = bind(this.handleHelpAllClick, this);
       this.handleHelpClick = bind(this.handleHelpClick, this);
+      this.handleIpfsModeClick = bind(this.handleIpfsModeClick, this);
       this.handleSettingsClick = bind(this.handleSettingsClick, this);
       this.handleDeleteClick = bind(this.handleDeleteClick, this);
       this.handleCloneUpgradeClick = bind(this.handleCloneUpgradeClick, this);
@@ -7171,6 +7172,10 @@
       this.menu_settings.items = [];
       this.menu_settings.items.push(["Update all sites", this.handleUpdateAllClick]);
       this.menu_settings.items.push(["---"]);
+      this.menu_settings.items.push(["IPFS: disabled", (function(_this) { return function() { return _this.handleIpfsModeClick("disabled"); }; })(this)]);
+      this.menu_settings.items.push(["IPFS: external Kubo", (function(_this) { return function() { return _this.handleIpfsModeClick("external"); }; })(this)]);
+      this.menu_settings.items.push(["IPFS: managed Kubo (coming soon)", null]);
+      this.menu_settings.items.push(["---"]);
       this.menu_settings.items.push([
         "Order sites by peers", ((function(_this) {
           return function() {
@@ -7227,6 +7232,16 @@
       } else {
         this.menu_settings.show();
       }
+      return false;
+    };
+
+    Head.prototype.handleIpfsModeClick = function(mode) {
+      if (["disabled", "external"].indexOf(mode) === -1) {
+        return Page.cmd("wrapperNotification", ["info", "Managed Kubo download is not available yet."]);
+      }
+      Page.cmd("configSet", ["ipfs_mode", mode], function() {
+        return Page.cmd("wrapperNotification", ["info", "IPFS mode set to " + mode + ". Restart may be required."]);
+      });
       return false;
     };
 
