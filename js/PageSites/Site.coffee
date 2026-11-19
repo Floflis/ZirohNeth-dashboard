@@ -108,8 +108,11 @@ class Site extends Class
 		badges = []
 		if @isEthereumIdentity()
 			badges.push h("span.identity-badge.identity-v2", "Ethereum identity")
+			badges.push h("span.identity-badge.identity-pending", "No Tor onion peers")
 		else
 			badges.push h("span.identity-badge.identity-legacy", "Bitcoin identity")
+			if @row.content?.includes? or @row.content?.user_contents?
+				badges.push h("span.identity-badge.identity-pending", "Migration layout unsupported")
 		if @row.settings?.content_verification_status == "invalid"
 			badges.push h("span.identity-badge.identity-error", "Manifest verification failed")
 		else if not @isVerifiedManifest()
