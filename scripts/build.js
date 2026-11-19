@@ -2,7 +2,7 @@
 "use strict";
 
 // Rebuild the checked-in browser bundle in the same explicit source order.
-// Run with: npm ci && npm run build
+// Run with: npm install --no-audit --no-fund && npm run build
 // Verify without writing: npm run check:bundle
 const fs = require("fs");
 const path = require("path");
@@ -56,7 +56,7 @@ const bundle = sources.map((relative) => {
   const body = path.extname(filename) === ".coffee"
     ? CoffeeScript.compile(source, { filename, bare: false })
     : source;
-  return "/* ---- " + path.basename(relative) + " ---- */\n\n" + body;
+  return "/* ---- " + relative.replace(/^js\\//, "") + " ---- */\n\n" + body;
 }).join("\n\n");
 
 if (process.argv.includes("--check")) {
