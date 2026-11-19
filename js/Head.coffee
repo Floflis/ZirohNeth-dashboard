@@ -104,6 +104,10 @@ class Head extends Class
 		@menu_settings.items = []
 		@menu_settings.items.push ["Update all sites", @handleUpdateAllClick]
 		@menu_settings.items.push ["---"]
+		@menu_settings.items.push ["IPFS: disabled", (=> @handleIpfsModeClick("disabled"))]
+		@menu_settings.items.push ["IPFS: external Kubo", (=> @handleIpfsModeClick("external"))]
+		@menu_settings.items.push ["IPFS: managed Kubo (coming soon)", null]
+		@menu_settings.items.push ["---"]
 		@menu_settings.items.push ["Order sites by peers", ( => @handleOrderbyClick("peers") ), (orderby == "peers")]
 		@menu_settings.items.push ["Order sites by update time", ( => @handleOrderbyClick("modified") ), (orderby == "modified")]
 		@menu_settings.items.push ["Order sites by add time", ( => @handleOrderbyClick("addtime") ), (orderby == "addtime")]
@@ -131,6 +135,14 @@ class Head extends Class
 			@menu_settings.hide()
 		else
 			@menu_settings.show()
+		return false
+
+
+	handleIpfsModeClick: (mode) =>
+		if mode not in ["disabled", "external"]
+			return Page.cmd "wrapperNotification", ["info", "Managed Kubo download is not available yet."]
+		Page.cmd "configSet", ["ipfs_mode", mode], ->
+			Page.cmd "wrapperNotification", ["info", "IPFS mode set to #{mode}. Restart may be required."]
 		return false
 
 	handleUpdateAllClick: =>
