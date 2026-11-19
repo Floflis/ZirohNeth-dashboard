@@ -3463,9 +3463,13 @@
       return "Pending verification";
     };
 
-    Site.prototype.isHistorical = function() {
+    Site.prototype.migrationState = function() {
       var ref;
-      return ((ref = this.row.settings) != null ? ref.migration_state : void 0) === "migration_verified";
+      return ((ref = this.row.settings) != null ? ref.migration_state : void 0) || "verification_unavailable";
+    };
+
+    Site.prototype.isHistorical = function() {
+      return this.migrationState() === "migration_verified";
     };
 
     Site.prototype.migrationTarget = function() {
@@ -3477,21 +3481,35 @@
     };
 
     Site.prototype.renderIdentityBadges = function() {
-      var badges, target;
+      var badges, target, ref;
       badges = [];
       if (this.isEthereumIdentity()) {
         badges.push(h("span.identity-badge.identity-v2", "Ethereum identity"));
       } else {
         badges.push(h("span.identity-badge.identity-legacy", "Bitcoin identity"));
       }
-      if (!this.isVerifiedManifest()) {
-        badges.push(h("span.identity-badge.identity-pending", "Manifest pending verification"));
+      if (((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "invalid") {
+        badges.push(h("span.identity-badge.identity-error", "Manifest verification failed"));
+      } else if (!this.isVerifiedManifest()) {
+        if (this.row.content) {
+          badges.push(h("span.identity-badge.identity-pending", "Verification unavailable"));
+        } else {
+          badges.push(h("span.identity-badge.identity-pending", "Manifest pending verification"));
+        }
       } else if (this.isVerifiedV2()) {
         badges.push(h("span.identity-badge.identity-v2", "Content v2"));
         badges.push(h("span.identity-badge.hash-v2", "BLAKE3-256"));
         badges.push(h("span.identity-badge.signature-v2", "EIP-712"));
       } else {
         badges.push(h("span.identity-badge.identity-legacy", "Content v1 · SHA-512"));
+      }
+      if (((ref = this.row.settings) != null ? ref.freshness_status : void 0) === "unverified_first_contact") {
+        badges.push(h("span.identity-badge.identity-pending", "Freshness not independently established"));
+      }
+      if (this.migrationState() === "migration_conflict") {
+        badges.push(h("span.identity-badge.identity-error", "Migration conflict"));
+      } else if (this.migrationState() === "migration_pending") {
+        badges.push(h("span.identity-badge.identity-pending", "Migration pending"));
       }
       if (this.isHistorical()) {
         target = this.migrationTarget();
