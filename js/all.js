@@ -1,6 +1,4 @@
-
 /* ---- lib/Class.coffee ---- */
-
 
 (function() {
   var Class,
@@ -55,8 +53,8 @@
 
 }).call(this);
 
-/* ---- lib/Promise.coffee ---- */
 
+/* ---- lib/Promise.coffee ---- */
 
 (function() {
   var Promise,
@@ -158,8 +156,8 @@
 
 }).call(this);
 
-/* ---- lib/Property.coffee ---- */
 
+/* ---- lib/Property.coffee ---- */
 
 (function() {
   Function.prototype.property = function(prop, desc) {
@@ -168,8 +166,8 @@
 
 }).call(this);
 
-/* ---- lib/Prototypes.coffee ---- */
 
+/* ---- lib/Prototypes.coffee ---- */
 
 (function() {
   String.prototype.startsWith = function(s) {
@@ -194,8 +192,8 @@
 
 }).call(this);
 
-/* ---- lib/maquette.js ---- */
 
+/* ---- lib/maquette.js ---- */
 
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -971,7 +969,6 @@
 
 /* ---- lib/marked.min.js ---- */
 
-
 /**
  * marked - a markdown parser
  * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
@@ -980,7 +977,6 @@
 (function(){var block={newline:/^\n+/,code:/^( {4}[^\n]+\n*)+/,fences:noop,hr:/^( *[-*_]){3,} *(?:\n+|$)/,heading:/^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)/,nptable:noop,lheading:/^([^\n]+)\n *(=|-){2,} *(?:\n+|$)/,blockquote:/^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,list:/^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,html:/^ *(?:comment|closed|closing) *(?:\n{2,}|\s*$)/,def:/^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,table:noop,paragraph:/^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,text:/^[^\n]+/};block.bullet=/(?:[*+-]|\d+\.)/;block.item=/^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;block.item=replace(block.item,"gm")(/bull/g,block.bullet)();block.list=replace(block.list)(/bull/g,block.bullet)("hr","\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))")("def","\\n+(?="+block.def.source+")")();block.blockquote=replace(block.blockquote)("def",block.def)();block._tag="(?!(?:"+"a|em|strong|small|s|cite|q|dfn|abbr|data|time|code"+"|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo"+"|span|br|wbr|ins|del|img)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b";block.html=replace(block.html)("comment",/<!--[\s\S]*?-->/)("closed",/<(tag)[\s\S]+?<\/\1>/)("closing",/<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)(/tag/g,block._tag)();block.paragraph=replace(block.paragraph)("hr",block.hr)("heading",block.heading)("lheading",block.lheading)("blockquote",block.blockquote)("tag","<"+block._tag)("def",block.def)();block.normal=merge({},block);block.gfm=merge({},block.normal,{fences:/^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)/,paragraph:/^/});block.gfm.paragraph=replace(block.paragraph)("(?!","(?!"+block.gfm.fences.source.replace("\\1","\\2")+"|"+block.list.source.replace("\\1","\\3")+"|")();block.tables=merge({},block.gfm,{nptable:/^ *(\S.*\|.*)\n *([-:]+ *\|[-| :]*)\n((?:.*\|.*(?:\n|$))*)\n*/,table:/^ *\|(.+)\n *\|( *[-:]+[-| :]*)\n((?: *\|.*(?:\n|$))*)\n*/});function Lexer(options){this.tokens=[];this.tokens.links={};this.options=options||marked.defaults;this.rules=block.normal;if(this.options.gfm){if(this.options.tables){this.rules=block.tables}else{this.rules=block.gfm}}}Lexer.rules=block;Lexer.lex=function(src,options){var lexer=new Lexer(options);return lexer.lex(src)};Lexer.prototype.lex=function(src){src=src.replace(/\r\n|\r/g,"\n").replace(/\t/g,"    ").replace(/\u00a0/g," ").replace(/\u2424/g,"\n");return this.token(src,true)};Lexer.prototype.token=function(src,top,bq){var src=src.replace(/^ +$/gm,""),next,loose,cap,bull,b,item,space,i,l;while(src){if(cap=this.rules.newline.exec(src)){src=src.substring(cap[0].length);if(cap[0].length>1){this.tokens.push({type:"space"})}}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);cap=cap[0].replace(/^ {4}/gm,"");this.tokens.push({type:"code",text:!this.options.pedantic?cap.replace(/\n+$/,""):cap});continue}if(cap=this.rules.fences.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"code",lang:cap[2],text:cap[3]});continue}if(cap=this.rules.heading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[1].length,text:cap[2]});continue}if(top&&(cap=this.rules.nptable.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].split(/ *\| */)}this.tokens.push(item);continue}if(cap=this.rules.lheading.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"heading",depth:cap[2]==="="?1:2,text:cap[1]});continue}if(cap=this.rules.hr.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"hr"});continue}if(cap=this.rules.blockquote.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"blockquote_start"});cap=cap[0].replace(/^ *> ?/gm,"");this.token(cap,top,true);this.tokens.push({type:"blockquote_end"});continue}if(cap=this.rules.list.exec(src)){src=src.substring(cap[0].length);bull=cap[2];this.tokens.push({type:"list_start",ordered:bull.length>1});cap=cap[0].match(this.rules.item);next=false;l=cap.length;i=0;for(;i<l;i++){item=cap[i];space=item.length;item=item.replace(/^ *([*+-]|\d+\.) +/,"");if(~item.indexOf("\n ")){space-=item.length;item=!this.options.pedantic?item.replace(new RegExp("^ {1,"+space+"}","gm"),""):item.replace(/^ {1,4}/gm,"")}if(this.options.smartLists&&i!==l-1){b=block.bullet.exec(cap[i+1])[0];if(bull!==b&&!(bull.length>1&&b.length>1)){src=cap.slice(i+1).join("\n")+src;i=l-1}}loose=next||/\n\n(?!\s*$)/.test(item);if(i!==l-1){next=item.charAt(item.length-1)==="\n";if(!loose)loose=next}this.tokens.push({type:loose?"loose_item_start":"list_item_start"});this.token(item,false,bq);this.tokens.push({type:"list_item_end"})}this.tokens.push({type:"list_end"});continue}if(cap=this.rules.html.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:this.options.sanitize?"paragraph":"html",pre:cap[1]==="pre"||cap[1]==="script"||cap[1]==="style",text:cap[0]});continue}if(!bq&&top&&(cap=this.rules.def.exec(src))){src=src.substring(cap[0].length);this.tokens.links[cap[1].toLowerCase()]={href:cap[2],title:cap[3]};continue}if(top&&(cap=this.rules.table.exec(src))){src=src.substring(cap[0].length);item={type:"table",header:cap[1].replace(/^ *| *\| *$/g,"").split(/ *\| */),align:cap[2].replace(/^ *|\| *$/g,"").split(/ *\| */),cells:cap[3].replace(/(?: *\| *)?\n$/,"").split("\n")};for(i=0;i<item.align.length;i++){if(/^ *-+: *$/.test(item.align[i])){item.align[i]="right"}else if(/^ *:-+: *$/.test(item.align[i])){item.align[i]="center"}else if(/^ *:-+ *$/.test(item.align[i])){item.align[i]="left"}else{item.align[i]=null}}for(i=0;i<item.cells.length;i++){item.cells[i]=item.cells[i].replace(/^ *\| *| *\| *$/g,"").split(/ *\| */)}this.tokens.push(item);continue}if(top&&(cap=this.rules.paragraph.exec(src))){src=src.substring(cap[0].length);this.tokens.push({type:"paragraph",text:cap[1].charAt(cap[1].length-1)==="\n"?cap[1].slice(0,-1):cap[1]});continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:"text",text:cap[0]});continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return this.tokens};var inline={escape:/^\\([\\`*{}\[\]()#+\-.!_>])/,autolink:/^<([^ >]+(@|:\/)[^ >]+)>/,url:noop,tag:/^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,link:/^!?\[(inside)\]\(href\)/,reflink:/^!?\[(inside)\]\s*\[([^\]]*)\]/,nolink:/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,strong:/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,em:/^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,code:/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,br:/^ {2,}\n(?!\s*$)/,del:noop,text:/^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/};inline._inside=/(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;inline._href=/\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;inline.link=replace(inline.link)("inside",inline._inside)("href",inline._href)();inline.reflink=replace(inline.reflink)("inside",inline._inside)();inline.normal=merge({},inline);inline.pedantic=merge({},inline.normal,{strong:/^__(?=\S)([\s\S]*?\S)__(?!_)|^\*\*(?=\S)([\s\S]*?\S)\*\*(?!\*)/,em:/^_(?=\S)([\s\S]*?\S)_(?!_)|^\*(?=\S)([\s\S]*?\S)\*(?!\*)/});inline.gfm=merge({},inline.normal,{escape:replace(inline.escape)("])","~|])")(),url:/^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,del:/^~~(?=\S)([\s\S]*?\S)~~/,text:replace(inline.text)("]|","~]|")("|","|https?://|")()});inline.breaks=merge({},inline.gfm,{br:replace(inline.br)("{2,}","*")(),text:replace(inline.gfm.text)("{2,}","*")()});function InlineLexer(links,options){this.options=options||marked.defaults;this.links=links;this.rules=inline.normal;this.renderer=this.options.renderer||new Renderer;this.renderer.options=this.options;if(!this.links){throw new Error("Tokens array requires a `links` property.")}if(this.options.gfm){if(this.options.breaks){this.rules=inline.breaks}else{this.rules=inline.gfm}}else if(this.options.pedantic){this.rules=inline.pedantic}}InlineLexer.rules=inline;InlineLexer.output=function(src,links,options){var inline=new InlineLexer(links,options);return inline.output(src)};InlineLexer.prototype.output=function(src){var out="",link,text,href,cap;while(src){if(cap=this.rules.escape.exec(src)){src=src.substring(cap[0].length);out+=cap[1];continue}if(cap=this.rules.autolink.exec(src)){src=src.substring(cap[0].length);if(cap[2]==="@"){text=cap[1].charAt(6)===":"?this.mangle(cap[1].substring(7)):this.mangle(cap[1]);href=this.mangle("mailto:")+text}else{text=escape(cap[1]);href=text}out+=this.renderer.link(href,null,text);continue}if(!this.inLink&&(cap=this.rules.url.exec(src))){src=src.substring(cap[0].length);text=escape(cap[1]);href=text;out+=this.renderer.link(href,null,text);continue}if(cap=this.rules.tag.exec(src)){if(!this.inLink&&/^<a /i.test(cap[0])){this.inLink=true}else if(this.inLink&&/^<\/a>/i.test(cap[0])){this.inLink=false}src=src.substring(cap[0].length);out+=this.options.sanitize?escape(cap[0]):cap[0];continue}if(cap=this.rules.link.exec(src)){src=src.substring(cap[0].length);this.inLink=true;out+=this.outputLink(cap,{href:cap[2],title:cap[3]});this.inLink=false;continue}if((cap=this.rules.reflink.exec(src))||(cap=this.rules.nolink.exec(src))){src=src.substring(cap[0].length);link=(cap[2]||cap[1]).replace(/\s+/g," ");link=this.links[link.toLowerCase()];if(!link||!link.href){out+=cap[0].charAt(0);src=cap[0].substring(1)+src;continue}this.inLink=true;out+=this.outputLink(cap,link);this.inLink=false;continue}if(cap=this.rules.strong.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.strong(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.em.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.em(this.output(cap[2]||cap[1]));continue}if(cap=this.rules.code.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.codespan(escape(cap[2],true));continue}if(cap=this.rules.br.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.br();continue}if(cap=this.rules.del.exec(src)){src=src.substring(cap[0].length);out+=this.renderer.del(this.output(cap[1]));continue}if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);out+=escape(this.smartypants(cap[0]));continue}if(src){throw new Error("Infinite loop on byte: "+src.charCodeAt(0))}}return out};InlineLexer.prototype.outputLink=function(cap,link){var href=escape(link.href),title=link.title?escape(link.title):null;return cap[0].charAt(0)!=="!"?this.renderer.link(href,title,this.output(cap[1])):this.renderer.image(href,title,escape(cap[1]))};InlineLexer.prototype.smartypants=function(text){if(!this.options.smartypants)return text;return text.replace(/--/g,"—").replace(/(^|[-\u2014/(\[{"\s])'/g,"$1‘").replace(/'/g,"’").replace(/(^|[-\u2014/(\[{\u2018\s])"/g,"$1“").replace(/"/g,"”").replace(/\.{3}/g,"…")};InlineLexer.prototype.mangle=function(text){var out="",l=text.length,i=0,ch;for(;i<l;i++){ch=text.charCodeAt(i);if(Math.random()>.5){ch="x"+ch.toString(16)}out+="&#"+ch+";"}return out};function Renderer(options){this.options=options||{}}Renderer.prototype.code=function(code,lang,escaped){if(this.options.highlight){var out=this.options.highlight(code,lang);if(out!=null&&out!==code){escaped=true;code=out}}if(!lang){return"<pre><code>"+(escaped?code:escape(code,true))+"\n</code></pre>"}return'<pre><code class="'+this.options.langPrefix+escape(lang,true)+'">'+(escaped?code:escape(code,true))+"\n</code></pre>\n"};Renderer.prototype.blockquote=function(quote){return"<blockquote>\n"+quote+"</blockquote>\n"};Renderer.prototype.html=function(html){return html};Renderer.prototype.heading=function(text,level,raw){return"<h"+level+' id="'+this.options.headerPrefix+raw.toLowerCase().replace(/[^\w]+/g,"-")+'">'+text+"</h"+level+">\n"};Renderer.prototype.hr=function(){return this.options.xhtml?"<hr/>\n":"<hr>\n"};Renderer.prototype.list=function(body,ordered){var type=ordered?"ol":"ul";return"<"+type+">\n"+body+"</"+type+">\n"};Renderer.prototype.listitem=function(text){return"<li>"+text+"</li>\n"};Renderer.prototype.paragraph=function(text){return"<p>"+text+"</p>\n"};Renderer.prototype.table=function(header,body){return"<table>\n"+"<thead>\n"+header+"</thead>\n"+"<tbody>\n"+body+"</tbody>\n"+"</table>\n"};Renderer.prototype.tablerow=function(content){return"<tr>\n"+content+"</tr>\n"};Renderer.prototype.tablecell=function(content,flags){var type=flags.header?"th":"td";var tag=flags.align?"<"+type+' style="text-align:'+flags.align+'">':"<"+type+">";return tag+content+"</"+type+">\n"};Renderer.prototype.strong=function(text){return"<strong>"+text+"</strong>"};Renderer.prototype.em=function(text){return"<em>"+text+"</em>"};Renderer.prototype.codespan=function(text){return"<code>"+text+"</code>"};Renderer.prototype.br=function(){return this.options.xhtml?"<br/>":"<br>"};Renderer.prototype.del=function(text){return"<del>"+text+"</del>"};Renderer.prototype.link=function(href,title,text){if(this.options.sanitize){try{var prot=decodeURIComponent(unescape(href)).replace(/[^\w:]/g,"").toLowerCase()}catch(e){return""}if(prot.indexOf("javascript:")===0){return""}}var out='<a href="'+href+'"';if(title){out+=' title="'+title+'"'}out+=">"+text+"</a>";return out};Renderer.prototype.image=function(href,title,text){var out='<img src="'+href+'" alt="'+text+'"';if(title){out+=' title="'+title+'"'}out+=this.options.xhtml?"/>":">";return out};function Parser(options){this.tokens=[];this.token=null;this.options=options||marked.defaults;this.options.renderer=this.options.renderer||new Renderer;this.renderer=this.options.renderer;this.renderer.options=this.options}Parser.parse=function(src,options,renderer){var parser=new Parser(options,renderer);return parser.parse(src)};Parser.prototype.parse=function(src){this.inline=new InlineLexer(src.links,this.options,this.renderer);this.tokens=src.reverse();var out="";while(this.next()){out+=this.tok()}return out};Parser.prototype.next=function(){return this.token=this.tokens.pop()};Parser.prototype.peek=function(){return this.tokens[this.tokens.length-1]||0};Parser.prototype.parseText=function(){var body=this.token.text;while(this.peek().type==="text"){body+="\n"+this.next().text}return this.inline.output(body)};Parser.prototype.tok=function(){switch(this.token.type){case"space":{return""}case"hr":{return this.renderer.hr()}case"heading":{return this.renderer.heading(this.inline.output(this.token.text),this.token.depth,this.token.text)}case"code":{return this.renderer.code(this.token.text,this.token.lang,this.token.escaped)}case"table":{var header="",body="",i,row,cell,flags,j;cell="";for(i=0;i<this.token.header.length;i++){flags={header:true,align:this.token.align[i]};cell+=this.renderer.tablecell(this.inline.output(this.token.header[i]),{header:true,align:this.token.align[i]})}header+=this.renderer.tablerow(cell);for(i=0;i<this.token.cells.length;i++){row=this.token.cells[i];cell="";for(j=0;j<row.length;j++){cell+=this.renderer.tablecell(this.inline.output(row[j]),{header:false,align:this.token.align[j]})}body+=this.renderer.tablerow(cell)}return this.renderer.table(header,body)}case"blockquote_start":{var body="";while(this.next().type!=="blockquote_end"){body+=this.tok()}return this.renderer.blockquote(body)}case"list_start":{var body="",ordered=this.token.ordered;while(this.next().type!=="list_end"){body+=this.tok()}return this.renderer.list(body,ordered)}case"list_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.token.type==="text"?this.parseText():this.tok()}return this.renderer.listitem(body)}case"loose_item_start":{var body="";while(this.next().type!=="list_item_end"){body+=this.tok()}return this.renderer.listitem(body)}case"html":{var html=!this.token.pre&&!this.options.pedantic?this.inline.output(this.token.text):this.token.text;return this.renderer.html(html)}case"paragraph":{return this.renderer.paragraph(this.inline.output(this.token.text))}case"text":{return this.renderer.paragraph(this.parseText())}}};function escape(html,encode){return html.replace(!encode?/&(?!#?\w+;)/g:/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}function unescape(html){return html.replace(/&([#\w]+);/g,function(_,n){n=n.toLowerCase();if(n==="colon")return":";if(n.charAt(0)==="#"){return n.charAt(1)==="x"?String.fromCharCode(parseInt(n.substring(2),16)):String.fromCharCode(+n.substring(1))}return""})}function replace(regex,opt){regex=regex.source;opt=opt||"";return function self(name,val){if(!name)return new RegExp(regex,opt);val=val.source||val;val=val.replace(/(^|[^\[])\^/g,"$1");regex=regex.replace(name,val);return self}}function noop(){}noop.exec=noop;function merge(obj){var i=1,target,key;for(;i<arguments.length;i++){target=arguments[i];for(key in target){if(Object.prototype.hasOwnProperty.call(target,key)){obj[key]=target[key]}}}return obj}function marked(src,opt,callback){if(callback||typeof opt==="function"){if(!callback){callback=opt;opt=null}opt=merge({},marked.defaults,opt||{});var highlight=opt.highlight,tokens,pending,i=0;try{tokens=Lexer.lex(src,opt)}catch(e){return callback(e)}pending=tokens.length;var done=function(err){if(err){opt.highlight=highlight;return callback(err)}var out;try{out=Parser.parse(tokens,opt)}catch(e){err=e}opt.highlight=highlight;return err?callback(err):callback(null,out)};if(!highlight||highlight.length<3){return done()}delete opt.highlight;if(!pending)return done();for(;i<tokens.length;i++){(function(token){if(token.type!=="code"){return--pending||done()}return highlight(token.text,token.lang,function(err,code){if(err)return done(err);if(code==null||code===token.text){return--pending||done()}token.text=code;token.escaped=true;--pending||done()})})(tokens[i])}return}try{if(opt)opt=merge({},marked.defaults,opt);return Parser.parse(Lexer.lex(src,opt),opt)}catch(e){e.message+="\nPlease report this to https://github.com/chjj/marked.";if((opt||marked.defaults).silent){return"<p>An error occured:</p><pre>"+escape(e.message+"",true)+"</pre>"}throw e}}marked.options=marked.setOptions=function(opt){merge(marked.defaults,opt);return marked};marked.defaults={gfm:true,tables:true,breaks:false,pedantic:false,sanitize:false,smartLists:false,silent:false,highlight:null,langPrefix:"lang-",smartypants:false,headerPrefix:"",renderer:new Renderer,xhtml:false};marked.Parser=Parser;marked.parser=Parser.parse;marked.Renderer=Renderer;marked.Lexer=Lexer;marked.lexer=Lexer.lex;marked.InlineLexer=InlineLexer;marked.inlineLexer=InlineLexer.output;marked.parse=marked;if(typeof module!=="undefined"&&typeof exports==="object"){module.exports=marked}else if(typeof define==="function"&&define.amd){define(function(){return marked})}else{this.marked=marked}}).call(function(){return this||(typeof window!=="undefined"?window:global)}());
 
 /* ---- PageFiles/Bigfiles.coffee ---- */
-
 
 (function() {
   var Bigfiles,
@@ -1050,8 +1046,8 @@
 
 }).call(this);
 
-/* ---- PageFiles/FilesResult.coffee ---- */
 
+/* ---- PageFiles/FilesResult.coffee ---- */
 
 (function() {
   var FilesResult,
@@ -1137,14 +1133,15 @@
 
 }).call(this);
 
-/* ---- PageFiles/PageFiles.coffee ---- */
 
+/* ---- PageFiles/PageFiles.coffee ---- */
 
 (function() {
   var PageFiles,
     bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    hasProp = {}.hasOwnProperty;
+    hasProp = {}.hasOwnProperty,
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   PageFiles = (function(superClass) {
     extend(PageFiles, superClass);
@@ -1310,28 +1307,42 @@
     };
 
     PageFiles.prototype.handleSelectbarDelete = function() {
-      var i, inner_path, inner_paths, j, len, len1, ref, site, site_file;
+      var bigfiles_modified_sites, i, j, k, len, len1, len2, ref, ref1, ref2, selected_site_file, selected_site_files, site, site_file;
+      bigfiles_modified_sites = [];
       ref = this.getSites();
       for (i = 0, len = ref.length; i < len; i++) {
         site = ref[i];
-        inner_paths = (function() {
+        selected_site_files = (function() {
           var j, len1, ref1, results;
           ref1 = site.files.items;
           results = [];
           for (j = 0, len1 = ref1.length; j < len1; j++) {
             site_file = ref1[j];
             if (site.files.selected[site_file.inner_path]) {
-              results.push(site_file.inner_path);
+              results.push(site_file);
             }
           }
           return results;
         })();
-        if (inner_paths.length > 0) {
-          for (j = 0, len1 = inner_paths.length; j < len1; j++) {
-            inner_path = inner_paths[j];
-            Page.cmd("optionalFileDelete", [inner_path, site.row.address]);
+        if (selected_site_files.length > 0) {
+          for (j = 0, len1 = selected_site_files.length; j < len1; j++) {
+            selected_site_file = selected_site_files[j];
+            Page.cmd("optionalFileDelete", [selected_site_file.inner_path, site.row.address]);
+            if (site.files.mode === "bigfiles") {
+              Page.cmd("optionalFileDelete", [selected_site_file.inner_path + ".piecemap.msgpack", site.row.address]);
+              bigfiles_modified_sites.push(site.row.address);
+            }
           }
           site.files.update();
+        }
+      }
+      if (bigfiles_modified_sites) {
+        ref1 = Page.site_list.sites;
+        for (k = 0, len2 = ref1.length; k < len2; k++) {
+          site = ref1[k];
+          if (ref2 = site.row.address, indexOf.call(bigfiles_modified_sites, ref2) >= 0) {
+            site.files.update();
+          }
         }
       }
       Page.site_list.update();
@@ -1625,15 +1636,17 @@
         })(this)), 1000);
       }
       return h("div#PageFiles", [
-        this.renderSelectbar(), this.renderTotalbar(), this.renderFilter(), this.result.filter_inner_path ? this.result.render() : (this.bigfiles.render(), sites_favorited.slice(0, +this.display_limit + 1 || 9e9).map((function(_this) {
-          return function(site) {
-            return site.renderOptionalStats();
-          };
-        })(this)), sites_connected.slice(0, +this.display_limit + 1 || 9e9).map((function(_this) {
-          return function(site) {
-            return site.renderOptionalStats();
-          };
-        })(this)))
+        this.renderSelectbar(), this.renderTotalbar(), this.renderFilter(), this.result.filter_inner_path ? this.result.render() : [
+          this.bigfiles.render(), sites_favorited.slice(0, +this.display_limit + 1 || 9e9).map((function(_this) {
+            return function(site) {
+              return site.renderOptionalStats();
+            };
+          })(this)), sites_connected.slice(0, +this.display_limit + 1 || 9e9).map((function(_this) {
+            return function(site) {
+              return site.renderOptionalStats();
+            };
+          })(this))
+        ]
       ]);
     };
 
@@ -1662,8 +1675,8 @@
 
 }).call(this);
 
-/* ---- PageFiles/SiteFiles.coffee ---- */
 
+/* ---- PageFiles/SiteFiles.coffee ---- */
 
 (function() {
   var SiteFiles,
@@ -1678,8 +1691,11 @@
       this.site = site1;
       this.update = bind(this.update, this);
       this.render = bind(this.render, this);
+      this.isSelectedAll = bind(this.isSelectedAll, this);
       this.renderOrderRight = bind(this.renderOrderRight, this);
       this.renderOrder = bind(this.renderOrder, this);
+      this.handleSelectAllClick = bind(this.handleSelectAllClick, this);
+      this.selectAll = bind(this.selectAll, this);
       this.handleMoreClick = bind(this.handleMoreClick, this);
       this.handleOrderbyClick = bind(this.handleOrderbyClick, this);
       this.handleRowMouseenter = bind(this.handleRowMouseenter, this);
@@ -1709,6 +1725,7 @@
           sites[name] = {
             row: file.site.row,
             files: {
+              mode: this.mode,
               items: [],
               selected: this.selected,
               update: this.update
@@ -1773,13 +1790,42 @@
       }
       this.orderby = orderby;
       this.update();
-      Page.projector.scheduleRender();
       return false;
     };
 
     SiteFiles.prototype.handleMoreClick = function() {
       this.limit += 15;
       this.update();
+      return false;
+    };
+
+    SiteFiles.prototype.selectAll = function() {
+      var i, is_selected_all, item, len, ref;
+      is_selected_all = this.isSelectedAll();
+      ref = this.items;
+      for (i = 0, len = ref.length; i < len; i++) {
+        item = ref[i];
+        if (is_selected_all) {
+          delete this.selected[item.inner_path];
+        } else {
+          this.selected[item.inner_path] = true;
+        }
+      }
+      Page.projector.scheduleRender();
+      return Page.page_files.checkSelectedFiles();
+    };
+
+    SiteFiles.prototype.handleSelectAllClick = function() {
+      if (this.has_more) {
+        this.limit = 1000;
+        this.update((function(_this) {
+          return function() {
+            return _this.selectAll();
+          };
+        })(this));
+      } else {
+        this.selectAll();
+      }
       return false;
     };
 
@@ -1807,6 +1853,10 @@
       }, [h("div.icon.icon-arrow-down"), title]);
     };
 
+    SiteFiles.prototype.isSelectedAll = function() {
+      return !this.has_more && Object.keys(this.selected).length === this.items.length;
+    };
+
     SiteFiles.prototype.render = function() {
       var ref;
       if (!((ref = this.items) != null ? ref.length : void 0)) {
@@ -1816,7 +1866,15 @@
         h("div.files.files-" + this.mode, {
           exitAnimation: Animation.slideUpInout
         }, [
-          h("div.tr.thead", [h("div.td.pre", "."), this.mode === "bigfiles" || this.mode === "result" ? h("div.td.site", this.renderOrder("Site", "address")) : void 0, h("div.td.inner_path", this.renderOrder("Optional file", "is_pinned DESC, inner_path")), this.mode === "bigfiles" ? h("div.td.status", "Status") : void 0, h("div.td.size", this.renderOrderRight("Size", "size")), h("div.td.peer", this.renderOrder("Peers", "peer")), h("div.td.uploaded", this.renderOrder("Uploaded", "uploaded")), h("div.td.added", this.renderOrder("Finished", "time_downloaded"))]), h("div.tbody", this.items.map((function(_this) {
+          h("div.tr.thead", [
+            h("div.td.pre", h("a.checkbox-outer", {
+              href: "#Select+all",
+              onclick: this.handleSelectAllClick,
+              classes: {
+                selected: this.isSelectedAll()
+              }
+            }, h("span.checkbox"))), this.mode === "bigfiles" || this.mode === "result" ? h("div.td.site", this.renderOrder("Site", "address")) : void 0, h("div.td.inner_path", this.renderOrder("Optional file", "is_pinned DESC, inner_path")), this.mode === "bigfiles" ? h("div.td.status", "Status") : void 0, h("div.td.size", this.renderOrderRight("Size", "size")), h("div.td.peer", this.renderOrder("Peers", "peer")), h("div.td.uploaded", this.renderOrder("Uploaded", "uploaded")), h("div.td.added", this.renderOrder("Finished", "time_downloaded"))
+          ]), h("div.tbody", this.items.map((function(_this) {
             return function(file) {
               var classes, percent, percent_bg, percent_title, profile_color, site, status;
               site = file.site || _this.site;
@@ -1929,8 +1987,8 @@
 
 }).call(this);
 
-/* ---- PageSites/Dashboard.coffee ---- */
 
+/* ---- PageSites/Dashboard.coffee ---- */
 
 (function() {
   var Dashboard,
@@ -1965,7 +2023,6 @@
       this.menu_warnings = new Menu();
       this.port_checking = false;
       this.has_web_gl = null;
-      Page.cmd('wrapperPermissionAdd', 'ADMIN')
     }
 
     Dashboard.prototype.isTorAlways = function() {
@@ -2137,7 +2194,7 @@
 
     Dashboard.prototype.handleDonateClick = function() {
       this.menu_donate.items = [];
-      this.menu_donate.items.push(["Join, participate and support development", "https://riza-committee.github.io/community/"]);
+      this.menu_donate.items.push(["Help to keep this project alive", Text.getSiteUrl("1DocsYf2tZVVMEMJFHiDsppmFicZCWkVv1") + "help_zeronet/donate/"]);
       this.menu_donate.toggle();
       return false;
     };
@@ -2177,7 +2234,7 @@
         status = stat.status.capitalize();
         if (status === "Announced" && stat.time_request && stat.time_status) {
           request_taken = stat.time_status - stat.time_request;
-          status += " in " + (request_taken.toFixed(2)) + "s";
+          status = (request_taken.toFixed(2)) + "s";
         }
         title_text = "Requests: " + stat.num_request;
         if (stat.last_error) {
@@ -2219,14 +2276,17 @@
       return false;
     };
 
-    Dashboard.prototype.getWarnings = function() {
+    Dashboard.prototype.getWarnings = function(add_server_errors) {
       var warnings;
+      if (add_server_errors == null) {
+        add_server_errors = true;
+      }
       warnings = [];
       if (navigator.userAgent.match(/(\b(MS)?IE\s+|Trident\/7.0)/)) {
         warnings.push({
           title: "Unsupported browser",
           href: "http://browsehappy.com/",
-          descr: "Internet Explorer is not fully supported browser by ZeroNet, please consider switching to Firefox, Chromium or other compatible browser"
+          descr: "Internet Explorer is not fully supported browser by ZeroNet, please consider switching to Chrome or Firefox"
         });
       }
       if (this.isTorAlways() && (!navigator.userAgent.match(/(Firefox)/) || (navigator.maxTouchPoints != null) || (navigator.serviceWorker != null))) {
@@ -2250,28 +2310,30 @@
           descr: "Looks like your system time is out of sync. Other users may not see your posted content and other problems could happen."
         });
       }
-      if (Page.server_errors.length > 2) {
-        warnings = warnings.concat(Page.server_errors.slice(-2).reverse());
-        warnings.push({
-          title: (Page.server_errors.length - 2) + " more errors...",
-          href: "#ZeroNet:Console"
-        });
-      } else {
-        warnings = warnings.concat(Page.server_errors);
+      if (add_server_errors) {
+        if (Page.server_errors.length > 2) {
+          warnings = warnings.concat(Page.server_errors.slice(-2).reverse());
+          warnings.push({
+            title: (Page.server_errors.length - 2) + " more errors...",
+            href: "#ZeroNet:Console:Error"
+          });
+        } else {
+          warnings = warnings.concat(Page.server_errors);
+        }
       }
       return warnings;
     };
 
     Dashboard.prototype.render = function() {
-      var tor_title, warnings;
+      var num_warnings, tor_title;
       if (Page.server_info) {
         tor_title = this.getTorTitle();
-        warnings = this.getWarnings();
-        return h("div#Dashboard", warnings.length ? h("a.warnings.dashboard-item", {
+        num_warnings = this.getWarnings(false) + Page.server_errors.length;
+        return h("div#Dashboard", num_warnings > 0 ? h("a.warnings.dashboard-item", {
           href: "#Warnings",
           onmousedown: this.handleWarningsClick,
           onclick: Page.returnFalse
-        }, "Warnings: " + warnings.length) : void 0, this.menu_warnings.render(".menu-warnings"), parseFloat(Page.server_info.version.replace(/\./g, "0")) < parseFloat(Page.latest_version.replace(/\./g, "0")) ? h("a.newversion.dashboard-item", {
+        }, "Warnings: " + num_warnings) : void 0, this.menu_warnings.render(".menu-warnings"), parseFloat(Page.server_info.version.replace(/\./g, "0")) < parseFloat(Page.latest_version.replace(/\./g, "0")) ? h("a.newversion.dashboard-item", {
           href: "#Update",
           onmousedown: this.handleNewversionClick,
           onclick: Page.returnFalse
@@ -2326,7 +2388,6 @@
 
 
 /* ---- PageSites/FeedList.coffee ---- */
-
 
 (function() {
   var FeedList,
@@ -2792,20 +2853,22 @@
 
     FeedList.prototype.renderWelcome = function() {
       return h("div.welcome", [
-        h("h1", "Welcome to 0net"), h("h2", "we use zeronet-conservancy client"), h("h2", "Let's build & preserve a decentralized Internet together!"), h("div.served", ["This site currently served by ", h("b.peers", Page.site_info["peers"] || "n/a"), " peers, without any central server."]), h("div.sites", [
-            h("h3", "Some sites we created:"),
-
-	    h("a.site.site-zerome", {
-		href: Text.getSiteUrl("1MeFqFfFFGQfa1J3gJyYYUvb5Lksczq7nH")
-            }, [h("div.title", ["ZeroMe"]), h("div.description", ["P2P microblogging social network"]), h("div.visit", ["Activate \u2501"])]),
-
-	    h("a.site.site-zerotalk", {
-		href: Text.getSiteUrl("1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT")
-            }, [h("div.title", ["ZeroTalk"]), h("div.description", ["An old general discussion forum"]), h("div.visit", ["Activate \u2501"])]),
-	    
-            h("a.site.site-searchindex", {
-		href: Text.getSiteUrl("1xiwbXaTbo9XU32hEpW4NyjZHrugSFdo6")
-	    }, [h("div.title", ["Search and index sites"]), h("div.description", ["Another site discovery and search service"]), h("div.visit", ["Activate \u2501"])])
+        h("img", {
+          src: "img/logo.svg",
+          height: 150,
+          onerror: "this.src='img/logo.png'; this.onerror=null;"
+        }), h("h1", "Welcome to ZeroNet"), h("h2", "Let's build a decentralized Internet together!"), h("div.served", ["This site currently served by ", h("b.peers", Page.site_info["peers"] || "n/a"), " peers, without any central server."]), h("div.sites", [
+          h("h3", "Some sites we created:"), h("a.site.site-zerotalk", {
+            href: Text.getSiteUrl("Talk.ZeroNetwork.bit")
+          }, [h("div.title", ["ZeroTalk"]), h("div.description", ["Reddit-like, decentralized forum"]), h("div.visit", ["Activate \u2501"])]), h("a.site.site-zeroblog", {
+            href: Text.getSiteUrl("Blog.ZeroNetwork.bit")
+          }, [h("div.title", ["ZeroBlog"]), h("div.description", ["Microblogging platform"]), h("div.visit", ["Activate \u2501"])]), h("a.site.site-zeromail", {
+            href: Text.getSiteUrl("Mail.ZeroNetwork.bit")
+          }, [h("div.title", ["ZeroMail"]), h("div.description", ["End-to-end encrypted mailing"]), h("div.visit", ["Activate \u2501"])]), h("a.site.site-zerome", {
+            href: Text.getSiteUrl("Me.ZeroNetwork.bit")
+          }, [h("div.title", ["ZeroMe"]), h("div.description", ["P2P social network"]), h("div.visit", ["Activate \u2501"])]), h("a.site.site-zerosites", {
+            href: Text.getSiteUrl("Sites.ZeroNetwork.bit")
+          }, [h("div.title", ["ZeroSites"]), h("div.description", ["Discover more sites"]), h("div.visit", ["Activate \u2501"])])
         ])
       ]);
     };
@@ -2862,13 +2925,17 @@
               enterAnimation: Animation.show,
               exitAnimation: Animation.slideUpInout
             }, [
-              "You are serving a blocked site: ", h("a.site", {
-                href: siteblock.site.getHref()
-              }, siteblock.site.row.content.title), h("span.reason", [h("b", "Reason: "), siteblock.reason]), h("a.hide", {
+              h("a.hide", {
                 href: "#Hide",
                 onclick: _this.handleNotificationHideClick,
                 address: siteblock.address
-              }, "\u00D7")
+              }, "\u00D7"), "You are serving a blocked site: ", h("a.site", {
+                href: siteblock.site.getHref()
+              }, siteblock.site.row.content.title || siteblock.site.row.address_short), h("span.reason", [
+                h("a.title", {
+                  href: siteblock.include.site.getHref()
+                }, "Reason"), ": ", siteblock.reason
+              ])
             ]);
           };
         })(this))
@@ -3001,8 +3068,8 @@
 
 }).call(this);
 
-/* ---- PageSites/MuteList.coffee ---- */
 
+/* ---- PageSites/MuteList.coffee ---- */
 
 (function() {
   var MuteList,
@@ -3066,14 +3133,15 @@
     };
 
     MuteList.prototype.updateFilterIncludes = function() {
-      return Page.cmd("FilterIncludeList", {
+      return Page.cmd("filterIncludeList", {
         all_sites: true,
         filters: true
       }, (function(_this) {
         return function(res) {
-          var address, auth_address, i, include, len, mute, mutes, ref, ref1, siteblock, siteblocks;
+          var address, address_hash, auth_address, i, include, j, len, len1, mute, mutes, ref, ref1, ref2, site, siteblock, siteblocks;
           _this.siteblocks_serving = [];
           _this.includes = [];
+          _this.siteblocks = {};
           for (i = 0, len = res.length; i < len; i++) {
             include = res[i];
             include.site = Page.site_list.sites_byaddress[include.address];
@@ -3093,11 +3161,9 @@
               for (address in ref1) {
                 siteblock = ref1[address];
                 siteblock.address = address;
+                siteblock.include = include;
                 siteblocks.push(siteblock);
-                if (Page.site_list.sites_byaddress[address] && !Page.settings.siteblocks_ignore[address]) {
-                  siteblock.site = Page.site_list.sites_byaddress[address];
-                  _this.siteblocks_serving.push(siteblock);
-                }
+                _this.siteblocks[address] = siteblock;
               }
             }
             include.siteblocks = siteblocks;
@@ -3106,6 +3172,20 @@
           _this.includes.sort(function(a, b) {
             return b.date_added - a.date_added;
           });
+          ref2 = Page.site_list.sites;
+          for (j = 0, len1 = ref2.length; j < len1; j++) {
+            site = ref2[j];
+            address = site.row.address;
+            if (_this.siteblocks[address] && !Page.settings.siteblocks_ignore[address]) {
+              _this.siteblocks[address].site = site;
+              _this.siteblocks_serving.push(_this.siteblocks[address]);
+            }
+            address_hash = "0x" + site.row.address_hash;
+            if (_this.siteblocks[address_hash] && !Page.settings.siteblocks_ignore[address_hash]) {
+              _this.siteblocks[address_hash].site = site;
+              _this.siteblocks_serving.push(_this.siteblocks[address_hash]);
+            }
+          }
           _this.updated = true;
           return Page.projector.scheduleRender();
         };
@@ -3136,7 +3216,7 @@
 
     MuteList.prototype.handleIncludeRemoveClick = function(e) {
       var include;
-      include = e.target.include;
+      include = e.currentTarget.include;
       if (include.removed) {
         Page.cmd("filterIncludeAdd", [include.inner_path, include.description, include.address]);
       } else {
@@ -3240,7 +3320,7 @@
                 href: "#Remove+include",
                 onclick: _this.handleIncludeRemoveClick,
                 include: include
-              }, "×"), include.mutes.length ? _this.renderMutes(include.mutes, "includes") : void 0, include.siteblocks.length ? _this.renderSiteblocks(include.siteblocks) : void 0
+              }, [h("span.closer", "×"), "deactivate this blocklist"]), include.mutes.length ? _this.renderMutes(include.mutes, "includes") : void 0, include.siteblocks.length ? _this.renderSiteblocks(include.siteblocks) : void 0
             ]);
           };
         })(this))
@@ -3296,8 +3376,8 @@
 
 }).call(this);
 
-/* ---- PageSites/Site.coffee ---- */
 
+/* ---- PageSites/Site.coffee ---- */
 
 (function() {
   var Site,
@@ -3317,7 +3397,6 @@
       this.handleHelpsClick = bind(this.handleHelpsClick, this);
       this.handleHelpAllClick = bind(this.handleHelpAllClick, this);
       this.handleHelpClick = bind(this.handleHelpClick, this);
-      this.handleIpfsModeClick = bind(this.handleIpfsModeClick, this);
       this.handleSettingsClick = bind(this.handleSettingsClick, this);
       this.handleDeleteClick = bind(this.handleDeleteClick, this);
       this.handleCloneUpgradeClick = bind(this.handleCloneUpgradeClick, this);
@@ -3425,59 +3504,100 @@
       return this.row.tasks > 0 || ((ref = this.row.event) != null ? ref[0] : void 0) === "updating";
     };
 
-    // Content v2 identity and hash metadata are supplied by the verified core.
     Site.prototype.isEthereumIdentity = function() {
-      var content;
-      content = this.row.content || {};
-      return /^0x[0-9a-fA-F]{40}$/.test(this.row.address) || content.identity_scheme === "ethereum-eoa-secp256k1";
+      var ref;
+      return /^0x[0-9a-fA-F]{40}$/.test(this.row.address) || ((ref = this.row.content) != null ? ref.identity_scheme : void 0) === "ethereum-eoa-secp256k1";
     };
 
     Site.prototype.contentVersion = function() {
-      var version, ref;
-      version = parseInt((ref = this.row.content) != null ? ref.content_version || 1 : 1, 10);
-      return isNaN(version) ? 1 : version;
+      var version;
+      if (this.row.content == null) {
+        return null;
+      }
+      version = parseInt(this.row.content.content_version || 1);
+      if (isNaN(version)) {
+        return null;
+      } else {
+        return version;
+      }
+    };
+
+    Site.prototype.isVerifiedManifest = function() {
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.content_verification_status : void 0) === "verified";
+    };
+
+    Site.prototype.isVerifiedV2 = function() {
+      var ref, ref1;
+      return this.isVerifiedManifest() && this.contentVersion() === 2 && ((ref = this.row.content) != null ? ref.hash_algorithm : void 0) === "blake3-256" && ((ref1 = this.row.content) != null ? ref1.signature_scheme : void 0) === "ethereum-eip712-v1";
     };
 
     Site.prototype.hashAlgorithm = function() {
-      var content;
-      content = this.row.content || {};
-      if (content.hash_algorithm === "blake3-256" || this.contentVersion() >= 2) {
+      if (this.isVerifiedV2()) {
         return "BLAKE3-256";
       }
-      return "SHA-512 legacy";
+      if (this.isVerifiedManifest() && this.contentVersion() === 1) {
+        return "SHA-512 legacy";
+      }
+      return "Pending verification";
+    };
+
+    Site.prototype.migrationState = function() {
+      var ref;
+      return ((ref = this.row.settings) != null ? ref.migration_state : void 0) || "verification_unavailable";
     };
 
     Site.prototype.isHistorical = function() {
-      var content, migration, ref, ref1;
-      content = this.row.content || {};
-      migration = content.migration;
-      return (((ref = this.row.settings) != null ? ref.migration_role : void 0) === "historical") ||
-        content.migration_status === "historical" || !!migration;
+      return this.migrationState() === "migration_verified";
     };
 
     Site.prototype.migrationTarget = function() {
-      var content, ref, ref1, ref2;
-      content = this.row.content || {};
-      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) ||
-        content.migration_target ||
-        ((ref1 = content.migration) != null ? ref1.new_identity : void 0) || null;
+      var ref;
+      if (!this.isHistorical()) {
+        return null;
+      }
+      return ((ref = this.row.settings) != null ? ref.migration_target : void 0) || null;
     };
 
     Site.prototype.renderIdentityBadges = function() {
-      var badges;
+      var badges, ref, ref1, ref2, ref3, target;
       badges = [];
-      if (this.contentVersion() >= 2 || this.isEthereumIdentity()) {
-        badges.push(h("span.identity-badge.identity-v2", "Ethereum · v2"));
-        badges.push(h("span.identity-badge.hash-v2", this.hashAlgorithm()));
+      if (this.isEthereumIdentity()) {
+        badges.push(h("span.identity-badge.identity-v2", "Ethereum identity"));
+        badges.push(h("span.identity-badge.identity-pending", "No Tor onion peers"));
+      } else {
+        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin identity"));
+        if ((((ref = this.row.content) != null ? ref.includes : void 0) != null) || (((ref1 = this.row.content) != null ? ref1.user_contents : void 0) != null)) {
+          badges.push(h("span.identity-badge.identity-pending", "Migration layout unsupported"));
+        }
+      }
+      if (((ref2 = this.row.settings) != null ? ref2.content_verification_status : void 0) === "invalid") {
+        badges.push(h("span.identity-badge.identity-error", "Manifest verification failed"));
+      } else if (!this.isVerifiedManifest()) {
+        if (this.row.content != null) {
+          badges.push(h("span.identity-badge.identity-pending", "Verification unavailable"));
+        } else {
+          badges.push(h("span.identity-badge.identity-pending", "Manifest pending verification"));
+        }
+      } else if (this.isVerifiedV2()) {
+        badges.push(h("span.identity-badge.identity-v2", "Content v2"));
+        badges.push(h("span.identity-badge.hash-v2", "BLAKE3-256"));
         badges.push(h("span.identity-badge.signature-v2", "EIP-712"));
       } else {
-        badges.push(h("span.identity-badge.identity-legacy", "Bitcoin · v1"));
+        badges.push(h("span.identity-badge.identity-legacy", "Content v1 · SHA-512"));
+      }
+      if (((ref3 = this.row.settings) != null ? ref3.freshness_status : void 0) === "unverified_first_contact") {
+        badges.push(h("span.identity-badge.identity-pending", "Freshness not independently established"));
+      }
+      if (this.migrationState() === "migration_conflict") {
+        badges.push(h("span.identity-badge.identity-error", "Migration conflict"));
+      } else if (this.migrationState() === "migration_pending") {
+        badges.push(h("span.identity-badge.identity-pending", "Migration pending"));
       }
       if (this.isHistorical()) {
-        var target;
         target = this.migrationTarget();
         if (target) {
-          badges.push(h("span.identity-badge.identity-historical", "Historical → " + target.slice(0, 8) + "…"));
+          badges.push(h("span.identity-badge.identity-historical", "Historical → " + (target.slice(0, 8)) + "…"));
         } else {
           badges.push(h("span.identity-badge.identity-historical", "Historical"));
         }
@@ -3556,7 +3676,7 @@
     };
 
     Site.prototype.handleDeleteClick = function() {
-      if (this.row.settings.own) {
+      if (this.row.settings.own || this.row.privatekey) {
         Page.cmd("wrapperConfirm", ["You can delete your site using the site's sidebar.", ["Open site"]], (function(_this) {
           return function(confirmed) {
             if (confirmed) {
@@ -3718,8 +3838,30 @@
     };
 
     Site.prototype.getHref = function(row) {
-      var href;
-      href = Text.getSiteUrl(this.row.address);
+      var ext, has_plugin, href, ref, ref1, ref2, ref3, supported_plugins;
+      if ((ref = this.row.content) != null ? ref.domain : void 0) {
+        ext = (ref1 = this.row.content) != null ? ref1.domain.split(".").pop() : void 0;
+        supported_plugins = {
+          bit: ["Zeroname", "Dnschain", "Zeroname-local"],
+          yo: ["NameYo"],
+          yu: ["NameYo"],
+          of: ["NameYo"],
+          inf: ["NameYo"],
+          zn: ["NameYo"],
+          list: ["NameYo"]
+        }[ext] || [];
+        has_plugin = (((ref2 = Page.server_info) != null ? ref2.plugins : void 0) != null) && supported_plugins.some(function(plugin) {
+          var ref3;
+          return indexOf.call((ref3 = Page.server_info) != null ? ref3.plugins : void 0, plugin) >= 0;
+        });
+      } else {
+        has_plugin = false;
+      }
+      if (has_plugin && ((ref3 = this.row.content) != null ? ref3.domain : void 0)) {
+        href = Text.getSiteUrl(this.row.content.domain);
+      } else {
+        href = Text.getSiteUrl(this.row.address);
+      }
       if (row != null ? row.inner_path : void 0) {
         return href + row.inner_path;
       } else {
@@ -3797,8 +3939,11 @@
     };
 
     Site.prototype.renderOptionalStats = function() {
-      var ratio, ratio_hue, row;
+      var base, ratio, ratio_hue, row;
       row = this.row;
+      if ((base = row.settings).bytes_sent == null) {
+        base.bytes_sent = 0;
+      }
       ratio = (row.settings.bytes_sent / row.settings.bytes_recv).toFixed(1);
       if (ratio >= 100) {
         ratio = "\u221E";
@@ -3852,8 +3997,8 @@
 
 }).call(this);
 
-/* ---- PageSites/SiteList.coffee ---- */
 
+/* ---- PageSites/SiteList.coffee ---- */
 
 (function() {
   var SiteList,
@@ -3867,6 +4012,8 @@
     function SiteList() {
       this.onSiteInfo = bind(this.onSiteInfo, this);
       this.render = bind(this.render, this);
+      this.renderSection = bind(this.renderSection, this);
+      this.handleSectionClick = bind(this.handleSectionClick, this);
       this.handleSiteListMoreClick = bind(this.handleSiteListMoreClick, this);
       this.handleFilterClear = bind(this.handleFilterClear, this);
       this.handleFilterKeyup = bind(this.handleFilterKeyup, this);
@@ -3886,6 +4033,7 @@
       this.filtering = "";
       setInterval(this.reorderTimer, 10000);
       this.limit = 100;
+      this.should_animate = false;
       Page.on_settings.then((function(_this) {
         return function() {
           return Page.on_server_info.then(function() {
@@ -3965,31 +4113,19 @@
       var demo_site_rows, i, len, results, site_row;
       demo_site_rows = [
         {
-          address: "1MeFqFfFFGQfa1J3gJyYYUvb5Lksczq7nH",
-          demo: true,
-          content: {
-            title: "ZeroMe",
-          },
-          settings: {}
-        }, {
           address: "1TaLkFrMwvbNsooF4ioKAY9EuxTBTjipT",
           demo: true,
           content: {
             title: "ZeroTalk",
+            domain: "Talk.ZeroNetwork.bit"
           },
           settings: {}
         }, {
-          address: "1EfLnw7GDXbZfJmGNoXGQ4XkuHGWkRZTMq",
+          address: "1BLogC9LN4oPDcruNz3qo1ysa133E9AGg8",
           demo: true,
           content: {
-            title: "ZeroTalk Tech",
-          },
-          settings: {}
-        }, {
-          address: "13gLfTixjjktySEGHBMnmrQu4qMJpoRuXw",
-          demo: true,
-          content: {
-            title: "The All-Night Bookstore and Cafe",
+            title: "ZeroBlog",
+            domain: "Blog.ZeroNetwork.bit"
           },
           settings: {}
         }, {
@@ -3997,38 +4133,44 @@
           demo: true,
           content: {
             title: "ZeroMail",
+            domain: "Mail.ZeroNetwork.bit"
+          },
+          settings: {}
+        }, {
+          address: "1uPLoaDwKzP6MCGoVzw48r4pxawRBdmQc",
+          demo: true,
+          content: {
+            title: "ZeroUp"
+          },
+          settings: {}
+        }, {
+          address: "1Gif7PqWTzVWDQ42Mo7np3zXmGAo3DXc7h",
+          demo: true,
+          content: {
+            title: "GIF Time"
           },
           settings: {}
         }, {
           address: "1SiTEs2D3rCBxeMoLHXei2UYqFcxctdwB",
           demo: true,
           content: {
-            title: "ZeroSites",
+            title: "More @ ZeroSites",
+            domain: "Sites.ZeroNetwork.bit"
           },
           settings: {}
-        }, {
-	    address: "186THqMWuptrZxq1rxzpguAivK3Bs6z84o",
-	    demo: true,
-	    content: {
-		title: "0list"
-	    },
-	    settings: {}
-	}, {
-	    address: "1xiwbXaTbo9XU32hEpW4NyjZHrugSFdo6",
-	    demo: true,
-	    content: {
-		title: "Search and Index sites"
-	    },
-	    settings: {}
-        }, {
-	    address: "15CEFKBRHFfAP9rmL6hhLmHoXrrgmw4B5o",
-	    demo: true,
-	    content: {
-		title: "Syncronite"
-	    },
-	    settings: {}
         }
       ];
+      if (Page.server_info.rev >= 1400) {
+        demo_site_rows.push({
+          address: "1MeFqFfFFGQfa1J3gJyYYUvb5Lksczq7nH",
+          demo: true,
+          content: {
+            title: "ZeroMe",
+            domain: "Me.ZeroNetwork.bit"
+          },
+          settings: {}
+        });
+      }
       this.inactive_demo_sites = [];
       results = [];
       for (i = 0, len = demo_site_rows.length; i < len; i++) {
@@ -4062,13 +4204,7 @@
       back = [];
       for (merged_type in merged_db) {
         merged_sites = merged_db[merged_type];
-        back.push([
-          h("h2.more", {
-            key: "Merged: " + merged_type
-          }, "Merged: " + merged_type), h("div.SiteList.merged.merged-" + merged_type, merged_sites.map(function(item) {
-            return item.render();
-          }))
-        ]);
+        back.push(this.renderSection(".merged.merged-" + merged_type, "Merged: " + merged_type, merged_sites));
       }
       return back;
     };
@@ -4095,6 +4231,61 @@
       this.limit += 1000;
       Page.projector.scheduleRender();
       return false;
+    };
+
+    SiteList.prototype.handleSectionClick = function(e) {
+      var class_name;
+      this.should_animate = true;
+      class_name = e.currentTarget.getAttribute("class_name");
+      if (Page.settings.sites_section_hide[class_name]) {
+        delete Page.settings.sites_section_hide[class_name];
+      } else {
+        Page.settings.sites_section_hide[class_name] = true;
+      }
+      Page.saveSettings();
+      Page.projector.scheduleRender();
+      return false;
+    };
+
+    SiteList.prototype.renderSection = function(class_name, title, items, limit) {
+      var classes, items_limited;
+      if (limit == null) {
+        limit = null;
+      }
+      if (items.length === 0) {
+        return null;
+      }
+      classes = {
+        "hidden": Page.settings.sites_section_hide[class_name]
+      };
+      if (limit && items.length > limit) {
+        items_limited = items.slice(0, +limit + 1 || 9e9);
+      } else {
+        items_limited = items;
+      }
+      return [
+        h("h2.SiteSection.section" + class_name, {
+          classes: classes
+        }, h("a.section-title", {
+          href: "#Show",
+          onclick: this.handleSectionClick,
+          class_name: class_name
+        }, [title, h("span.hide-title", "[Show " + items.length + " sites]")])), !classes.hidden ? h("div.SiteList" + class_name, {
+          classes: classes,
+          exitAnimation: Animation.slideUp,
+          enterAnimation: Animation.slideDown,
+          animate_disable: !this.should_animate
+        }, [
+          [
+            items_limited.map(function(item) {
+              return item.render();
+            })
+          ], limit && items.length > limit ? h("a.site-list-more", {
+            href: "#Show+more+connected+sites",
+            onclick: this.handleSiteListMoreClick
+          }, "Show more") : void 0
+        ]) : void 0
+      ];
     };
 
     SiteList.prototype.render = function() {
@@ -4153,30 +4344,7 @@
             href: "#clear",
             onclick: this.handleFilterClear
           }, "\u00D7")
-        ] : void 0, this.sites_recent.length > 0 ? h("h2.recent", "Recently downloaded:") : void 0, h("div.SiteList.recent", this.sites_recent.map(function(item) {
-          return item.render();
-        })), this.sites_needaction.length > 0 ? h("h2.needaction", "Running out of size limit:") : void 0, h("div.SiteList.needaction", this.sites_needaction.map(function(item) {
-          return item.render();
-        })), this.sites_favorited.length > 0 ? h("h2.favorited", "Favorited sites:") : void 0, h("div.SiteList.favorited", this.sites_favorited.map(function(item) {
-          return item.render();
-        })), this.sites_owned.length > 0 ? h("h2.owned", "Owned sites:") : void 0, h("div.SiteList.owned", this.sites_owned.map(function(item) {
-          return item.render();
-        })), this.sites_connecting.length > 0 ? h("h2.connecting", "Connecting sites:") : void 0, h("div.SiteList.connecting", this.sites_connecting.map(function(item) {
-          return item.render();
-        })), this.sites_connected.length > 0 ? h("h2.connected", "Connected sites:") : void 0, h("div.SiteList.connected", [
-          this.sites_connected.slice(0, +(this.limit - 1) + 1 || 9e9).map(function(item) {
-            return item.render();
-          }), this.sites_connected.length > this.limit ? h("a.site-list-more", {
-            href: "#Show+more+connected+sites",
-            onclick: this.handleSiteListMoreClick
-          }, "Show more") : void 0
-        ]), this.renderMergedSites(), this.inactive_demo_sites !== null && this.inactive_demo_sites.length > 0 ? [
-          h("h2.more", {
-            key: "More"
-          }, "More sites:"), h("div.SiteList.more", this.inactive_demo_sites.map(function(item) {
-            return item.render();
-          }))
-        ] : void 0
+        ] : void 0, this.renderSection(".recent", "Recently downloaded:", this.sites_recent), this.renderSection(".needaction", "Running out of size limit:", this.sites_needaction), this.renderSection(".favorited", "Favorited sites:", this.sites_favorited), this.renderSection(".owned", "Owned sites:", this.sites_owned), this.renderSection(".connecting", "Connecting sites:", this.sites_connecting), this.renderSection(".connected", "Connected sites:", this.sites_connected, this.limit), this.renderMergedSites(), this.inactive_demo_sites !== null && this.inactive_demo_sites.length > 0 ? this.renderSection(".more", "More sites:", this.inactive_demo_sites) : void 0
       ]);
     };
 
@@ -4197,8 +4365,8 @@
 
 }).call(this);
 
-/* ---- PageSites/Trigger.coffee ---- */
 
+/* ---- PageSites/Trigger.coffee ---- */
 
 (function() {
   var Trigger,
@@ -4247,8 +4415,8 @@
 
 }).call(this);
 
-/* ---- PageStats/Chart.coffee ---- */
 
+/* ---- PageStats/Chart.coffee ---- */
 
 (function() {
   var Chart,
@@ -4394,8 +4562,8 @@
 
 }).call(this);
 
-/* ---- PageStats/ChartBig.coffee ---- */
 
+/* ---- PageStats/ChartBig.coffee ---- */
 
 (function() {
   var ChartBig,
@@ -4670,7 +4838,7 @@
               data: []
             }, {
               type: 'line',
-              label: 'Sent',
+              label: "Sent",
               borderColor: gradient_stroke_bgline_up,
               backgroundColor: "rgba(255,255,255,0.0)",
               pointRadius: 0,
@@ -4685,7 +4853,7 @@
               data: []
             }, {
               type: 'line',
-              label: 'Received',
+              label: "Received",
               borderColor: gradient_stroke_bgline_down,
               backgroundColor: "rgba(255,255,255,0.0)",
               pointRadius: 0,
@@ -4861,8 +5029,8 @@
 
 }).call(this);
 
-/* ---- PageStats/ChartLegend.coffee ---- */
 
+/* ---- PageStats/ChartLegend.coffee ---- */
 
 (function() {
   var ChartLegend,
@@ -4938,8 +5106,8 @@
 
 }).call(this);
 
-/* ---- PageStats/ChartRadar.coffee ---- */
 
+/* ---- PageStats/ChartRadar.coffee ---- */
 
 (function() {
   var ChartRadar,
@@ -5201,7 +5369,7 @@
         delay: i * 0.05
       }, h("a.title", {
         href: stat.site.getHref()
-      }, stat.site.row.content.title), " ", h("span.value", " (" + (Text.formatSize(stat[this.order_by]) || 'No data yet') + ")"));
+      }, stat.site.row.content.title), " ", h("span.value", " (" + (Text.formatSize(stat[this.order_by]) || "No data yet") + ")"));
     };
 
     ChartRadar.prototype.render = function() {
@@ -5252,8 +5420,8 @@
 
 }).call(this);
 
-/* ---- PageStats/ChartTimeline.coffee ---- */
 
+/* ---- PageStats/ChartTimeline.coffee ---- */
 
 (function() {
   var ChartTimeline,
@@ -5315,6 +5483,9 @@
         return results;
       }).call(this)).pop();
       line_width = 1400 / this.line_data.length;
+      if (data_last_i == null) {
+        return;
+      }
       ref = this.line_data;
       for (i = j = 0, len = ref.length; j < len; i = ++j) {
         data = ref[i];
@@ -5375,7 +5546,7 @@
       ], (function(_this) {
         return function(res) {
           var data_date_added, data_from, data_to, day_data, day_from, day_name, day_string, day_to, group_step_data, i, j, k, l, len, m, n, ref, row, x;
-          _this.logStart("Parse result");
+          _this.logStart("Parse result", res.length);
           _this.line_data = [];
           for (j = 0, len = res.length; j < len; j++) {
             row = res[j];
@@ -5495,8 +5666,8 @@
 
 }).call(this);
 
-/* ---- PageStats/ChartWorld.coffee ---- */
 
+/* ---- PageStats/ChartWorld.coffee ---- */
 
 (function() {
   var ChartWorld,
@@ -5631,8 +5802,8 @@
 
 }).call(this);
 
-/* ---- PageStats/PageStats.coffee ---- */
 
+/* ---- PageStats/PageStats.coffee ---- */
 
 (function() {
   var PageStats,
@@ -5727,7 +5898,7 @@
       this.chart_connections.title = "Connections";
       this.chart_connections.type_names = ["peer", "peer_onion", "connection", "connection_onion", "connection_in", "connection_ping_avg", "connection_ping_min"];
       this.chart_connections.formatValue = function(type_data) {
-        return "" + type_data.connection + " of " + type_data.peer + " peers";
+        return type_data.connection + " of " + type_data.peer + " peers";
       };
       this.chart_connections.formatDetails = function(type_data) {
         var back;
@@ -5875,8 +6046,8 @@
 
 }).call(this);
 
-/* ---- PageStats/StatList.coffee ---- */
 
+/* ---- PageStats/StatList.coffee ---- */
 
 (function() {
   var StatList,
@@ -5914,8 +6085,8 @@
 
 }).call(this);
 
-/* ---- utils/Animation.coffee ---- */
 
+/* ---- utils/Animation.coffee ---- */
 
 (function() {
   var Animation;
@@ -5925,7 +6096,7 @@
 
     Animation.prototype.slideDown = function(elem, props) {
       var cstyle, h, margin_bottom, margin_top, padding_bottom, padding_top, transition;
-      if (elem.offsetTop > 1000) {
+      if ((elem.offsetTop > 1000 && elem.getBoundingClientRect().top > 1000) || props.animate_disable) {
         return;
       }
       h = elem.offsetHeight;
@@ -5965,7 +6136,7 @@
     };
 
     Animation.prototype.slideUp = function(elem, remove_func, props) {
-      if (elem.offsetTop > 1000) {
+      if (elem.offsetTop > 1000 && elem.getBoundingClientRect().top > 1000) {
         return remove_func();
       }
       elem.className += " animate-back";
@@ -6080,8 +6251,8 @@
 
 }).call(this);
 
-/* ---- utils/Dollar.coffee ---- */
 
+/* ---- utils/Dollar.coffee ---- */
 
 (function() {
   window.$ = function(selector) {
@@ -6092,8 +6263,8 @@
 
 }).call(this);
 
-/* ---- utils/ItemList.coffee ---- */
 
+/* ---- utils/ItemList.coffee ---- */
 
 (function() {
   var ItemList;
@@ -6144,8 +6315,8 @@
 
 }).call(this);
 
-/* ---- utils/Menu.coffee ---- */
 
+/* ---- utils/Menu.coffee ---- */
 
 (function() {
   var Menu,
@@ -6330,8 +6501,8 @@
 
 }).call(this);
 
-/* ---- utils/Prototypes.coffee ---- */
 
+/* ---- utils/Prototypes.coffee ---- */
 
 (function() {
   String.prototype.startsWith = function(s) {
@@ -6364,8 +6535,8 @@
 
 }).call(this);
 
-/* ---- utils/RateLimit.coffee ---- */
 
+/* ---- utils/RateLimit.coffee ---- */
 
 (function() {
   var call_after_interval, limits;
@@ -6392,8 +6563,8 @@
 
 }).call(this);
 
-/* ---- utils/RateLimitCb.coffee ---- */
 
+/* ---- utils/RateLimitCb.coffee ---- */
 
 (function() {
   var call_after_interval, calling, calling_iterval, last_time,
@@ -6478,8 +6649,8 @@
 
 }).call(this);
 
-/* ---- utils/Text.coffee ---- */
 
+/* ---- utils/Text.coffee ---- */
 
 (function() {
   var MarkedRenderer, Text,
@@ -6696,7 +6867,7 @@
 
     Text.prototype.formatSize = function(size) {
       var size_mb;
-      if (!parseInt(size)) {
+      if (isNaN(parseInt(size))) {
         return "";
       }
       size_mb = size / 1024 / 1024;
@@ -6707,7 +6878,7 @@
       } else if (size / 1024 >= 1000) {
         return size_mb.toFixed(2) + " MB";
       } else {
-        return (size / 1024).toFixed(2) + " KB";
+        return (parseInt(size) / 1024).toFixed(2) + " KB";
       }
     };
 
@@ -6723,8 +6894,8 @@
 
 }).call(this);
 
-/* ---- utils/Time.coffee ---- */
 
+/* ---- utils/Time.coffee ---- */
 
 (function() {
   var Time;
@@ -6823,8 +6994,8 @@
 
 }).call(this);
 
-/* ---- utils/Translate.coffee ---- */
 
+/* ---- utils/Translate.coffee ---- */
 
 (function() {
   window._ = function(s) {
@@ -6833,8 +7004,8 @@
 
 }).call(this);
 
-/* ---- utils/ZeroFrame.coffee ---- */
 
+/* ---- utils/ZeroFrame.coffee ---- */
 
 (function() {
   var ZeroFrame,
@@ -6965,8 +7136,8 @@
 
 }).call(this);
 
-/* ---- Head.coffee ---- */
 
+/* ---- Head.coffee ---- */
 
 (function() {
   var Head,
@@ -6987,6 +7158,7 @@
       this.handleTorClick = bind(this.handleTorClick, this);
       this.handleOrderbyClick = bind(this.handleOrderbyClick, this);
       this.handleUpdateAllClick = bind(this.handleUpdateAllClick, this);
+      this.handleIpfsModeClick = bind(this.handleIpfsModeClick, this);
       this.handleSettingsClick = bind(this.handleSettingsClick, this);
       this.handleBackupClick = bind(this.handleBackupClick, this);
       this.handleCreateSiteClick = bind(this.handleCreateSiteClick, this);
@@ -7020,7 +7192,7 @@
 
     Head.prototype.renderMenuLanguage = function() {
       var lang, langs, ref;
-      langs = ["da", "de", "en", "es", "fr", "hu", "it", "nl", "pl", "pt", "pt-br", "ru", "sk", "tr", "uk", "zh", "zh-tw"];
+      langs = ["da", "de", "en", "es", "fa", "fr", "hu", "it", "nl", "pl", "pt", "pt-br", "ru", "sk", "tr", "uk", "zh", "zh-tw"];
       if (Page.server_info.language && (ref = Page.server_info.language, indexOf.call(langs, ref) < 0)) {
         langs.push(Page.server_info.language);
       }
@@ -7080,8 +7252,12 @@
     };
 
     Head.prototype.renderMenuTheme = function() {
-      var ref, theme, theme_selected, themes;
-      themes = ["system", "light", "dark"];
+      var ref, theme_id, theme_selected, theme_title, themes;
+      themes = {
+        "system": _("system"),
+        "light": _("light"),
+        "dark": _("dark")
+      };
       if (Page.server_info.user_settings.use_system_theme) {
         theme_selected = "system";
       } else {
@@ -7091,19 +7267,19 @@
         }
       }
       return h("div.menu-radio.menu-themes", h("div", "Theme: "), (function() {
-        var i, len, results;
+        var results;
         results = [];
-        for (i = 0, len = themes.length; i < len; i++) {
-          theme = themes[i];
+        for (theme_id in themes) {
+          theme_title = themes[theme_id];
           results.push([
             h("a", {
-              href: "#" + theme,
+              href: "#" + theme_id,
               onclick: this.handleThemeClick,
               classes: {
-                selected: theme_selected === theme,
+                selected: theme_selected === theme_id,
                 long: true
               }
-            }, theme), " "
+            }, theme_title), " "
           ]);
         }
         return results;
@@ -7134,8 +7310,20 @@
       this.menu_settings.items = [];
       this.menu_settings.items.push(["Update all sites", this.handleUpdateAllClick]);
       this.menu_settings.items.push(["---"]);
-      this.menu_settings.items.push(["IPFS: disabled", (function(_this) { return function() { return _this.handleIpfsModeClick("disabled"); }; })(this)]);
-      this.menu_settings.items.push(["IPFS: external Kubo", (function(_this) { return function() { return _this.handleIpfsModeClick("external"); }; })(this)]);
+      this.menu_settings.items.push([
+        "IPFS: disabled", ((function(_this) {
+          return function() {
+            return _this.handleIpfsModeClick("disabled");
+          };
+        })(this))
+      ]);
+      this.menu_settings.items.push([
+        "IPFS: external Kubo", ((function(_this) {
+          return function() {
+            return _this.handleIpfsModeClick("external");
+          };
+        })(this))
+      ]);
       this.menu_settings.items.push(["IPFS: managed Kubo (coming soon)", null]);
       this.menu_settings.items.push(["---"]);
       this.menu_settings.items.push([
@@ -7184,8 +7372,7 @@
       if (!Page.server_info.multiuser || Page.server_info.multiuser_admin) {
         this.menu_settings.items.push(["Show data directory", this.handleBackupClick]);
       }
-      // this.menu_settings.items.push(["Version " + Page.server_info.version + " (rev" + Page.server_info.rev + "): " + (this.formatUpdateInfo()), this.handleUpdateZeronetClick]);
-      this.menu_settings.items.push(["Version " + Page.server_info.version + " (rev" + Page.server_info.rev + ")"]);
+      this.menu_settings.items.push(["Version " + Page.server_info.version + " (rev" + Page.server_info.rev + "): " + (this.formatUpdateInfo()), this.handleUpdateZeronetClick]);
       if (!Page.server_info.multiuser || Page.server_info.multiuser_admin) {
         this.menu_settings.items.push(["Shut down ZeroNet", this.handleShutdownZeronetClick]);
       }
@@ -7198,7 +7385,7 @@
     };
 
     Head.prototype.handleIpfsModeClick = function(mode) {
-      if (["disabled", "external"].indexOf(mode) === -1) {
+      if (mode !== "disabled" && mode !== "external") {
         return Page.cmd("wrapperNotification", ["info", "Managed Kubo download is not available yet."]);
       }
       Page.cmd("configSet", ["ipfs_mode", mode], function() {
@@ -7243,6 +7430,15 @@
     };
 
     Head.prototype.handleUpdateZeronetClick = function() {
+      if (Page.server_info.updatesite) {
+        Page.updateZeronet();
+      } else {
+        Page.cmd("wrapperConfirm", ["Update to latest development version?", "Update ZeroNet " + Page.latest_version], (function(_this) {
+          return function() {
+            return Page.updateZeronet();
+          };
+        })(this));
+      }
       return false;
     };
 
@@ -7255,7 +7451,11 @@
     };
 
     Head.prototype.handleModeClick = function(e) {
-      Page.handleLinkClick(e);
+      if (Page.server_info.rev < 1700) {
+        Page.cmd("wrapperNotification", ["info", "This feature requires ZeroNet version 0.5.0"]);
+      } else {
+        Page.handleLinkClick(e);
+      }
       return false;
     };
 
@@ -7267,7 +7467,12 @@
       }, ["\u22EE"]), this.menu_settings.render(), h("a.logo", {
         href: "?Home"
       }, [
-        h("span", ["0net-conservancy dashboard"])
+        h("img", {
+          src: 'img/logo.svg',
+          width: 40,
+          height: 40,
+          onerror: "this.src='img/logo.png'; this.onerror=null;"
+        }), h("span", ["Hello ZeroNet_"])
       ]), h("div.modes", [
         h("a.mode.sites", {
           href: "?",
@@ -7299,8 +7504,8 @@
 
 }).call(this);
 
-/* ---- ZeroHello.coffee ---- */
 
+/* ---- ZeroHello.coffee ---- */
 
 (function() {
   var ZeroHello,
@@ -7487,7 +7692,7 @@
       return this.on_site_info.then((function(_this) {
         return function() {
           return _this.cmd("userGetSettings", [], function(res) {
-            var base1, base2, base3, base4;
+            var base1, base2, base3, base4, base5;
             if (!res || res.error) {
               return _this.loadLocalStorage();
             } else {
@@ -7495,14 +7700,17 @@
               if ((base1 = _this.settings).sites_orderby == null) {
                 base1.sites_orderby = "peers";
               }
-              if ((base2 = _this.settings).favorite_sites == null) {
-                base2.favorite_sites = {};
+              if ((base2 = _this.settings).sites_section_hide == null) {
+                base2.sites_section_hide = {};
               }
-              if ((base3 = _this.settings).siteblocks_ignore == null) {
-                base3.siteblocks_ignore = {};
+              if ((base3 = _this.settings).favorite_sites == null) {
+                base3.favorite_sites = {};
               }
-              if ((base4 = _this.settings).date_feed_visit == null) {
-                base4.date_feed_visit = 1;
+              if ((base4 = _this.settings).siteblocks_ignore == null) {
+                base4.siteblocks_ignore = {};
+              }
+              if ((base5 = _this.settings).date_feed_visit == null) {
+                base5.date_feed_visit = 1;
               }
               _this.feed_list.date_feed_visit = _this.settings.date_feed_visit;
               return _this.on_settings.resolve(_this.settings);
@@ -7579,10 +7787,15 @@
     };
 
     ZeroHello.prototype.reloadServerErrors = function(cb) {
-      return this.cmd("serverErrors", {}, (function(_this) {
-        return function(server_errors) {
-          _this.setServerErrors(server_errors);
-          return typeof cb === "function" ? cb(server_errors) : void 0;
+      return this.on_server_info.then((function(_this) {
+        return function() {
+          if (_this.server_info.multiuser && !_this.server_info.multiuser_admin) {
+            return typeof cb === "function" ? cb(false) : void 0;
+          }
+          return _this.cmd("serverErrors", {}, function(server_errors) {
+            _this.setServerErrors(server_errors);
+            return typeof cb === "function" ? cb(server_errors) : void 0;
+          });
         };
       })(this));
     };
@@ -7659,7 +7872,7 @@
         this.server_errors.push({
           title: [Time.since(date_added), " - ", level],
           descr: message,
-          href: null
+          href: "#ZeroNet:Console:Error"
         });
       }
       return this.projector.scheduleRender();
@@ -7675,7 +7888,12 @@
     };
 
     ZeroHello.prototype.updateZeronet = function() {
-      Page.cmd("wrapperNotification", ["info", "please update zeronet-conservancy via git", 8000]);
+      if (this.server_info.updatesite) {
+        return window.top.location = Text.getSiteUrl(this.server_info.updatesite);
+      } else {
+        Page.cmd("wrapperNotification", ["info", "Updating to latest version...<br>Please restart ZeroNet manually if it does not come back in the next few minutes.", 8000]);
+        return Page.cmd("serverUpdate");
+      }
     };
 
     return ZeroHello;
